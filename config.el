@@ -15,6 +15,10 @@
 
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 
+(setq-default header-line-format
+        (concat (propertize " " 'display '((space :align-to 0)))
+                " "))
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 
@@ -154,13 +158,13 @@
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
-(after! centaur-tabs
-   (setq centaur-tabs-style "box"
-     centaur-tabs-height 32
-     centaur-tabs-set-bar 'under
-     x-underline-at-descent-line t
-     centaur-tabs-close-button "×"
-     centaur-tabs-modified-marker "Ø"))
+;; (after! centaur-tabs
+;;    (setq centaur-tabs-style "box"
+;;      centaur-tabs-height 32
+;;      centaur-tabs-set-bar 'under
+;;      x-underline-at-descent-line t
+;;      centaur-tabs-close-button "×"
+;;      centaur-tabs-modified-marker "Ø"))
 ;; (use-package! centaur-tabs
 ;;  :config
 ;;  (centaur-tabs-headline-match)
@@ -419,3 +423,7 @@ clicked."
   (interactive)
   (shell-command yeet/paint-cmd)
   )
+
+(defun henlo ()
+  "henlo."
+  (interactive)(message "\"henlo\""))

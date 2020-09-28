@@ -11,7 +11,7 @@ Lets get this config started!
 #+END_SRC
 
 * Rudimentary configuration
-This is the stuff that does not really belong in any module
+This is the stuff that does not really belong in any module but is useful
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Jeetaditya Chatterjee"
       user-mail-address "jeetelongname@gmail.com"
@@ -26,6 +26,7 @@ This is the stuff that does not really belong in any module
 (global-auto-revert-mode t)
 #+END_SRC
 
+Frankly I don't know why this is not default
 #+BEGIN_SRC emacs-lisp
 (setq evil-split-window-below  t
       evil-vsplit-window-right t)
@@ -33,6 +34,12 @@ This is the stuff that does not really belong in any module
 
 #+BEGIN_SRC emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq-default header-line-format
+        (concat (propertize " " 'display '((space :align-to 0)))
+                " "))
 #+END_SRC
 
 * Packages
@@ -43,9 +50,7 @@ A nice little header
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
-** Package Loading
-I have some packages I have installed
-*** emacs easy hugo
+** emacs easy hugo
 This is mostly just for the time stamp but it does come in handy
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! emacs-easy-hugo
@@ -58,7 +63,7 @@ This is mostly just for the time stamp but it does come in handy
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 #+END_SRC
-*** Discord emacs
+** TODO Discord emacs
 I use discord emacs over elcord .. well because I found it first this is pretty
 much all that is needed for it to work and you can use the default client id to
 get it working right away or if you want to roll your own .you can add assets by
@@ -79,33 +84,33 @@ know)
   (discord-emacs-run "384815451978334208") ;;default
   )
 #+END_SRC
-*** elfeed
+** elfeed
 I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! elfeed-goodies)
 (package! elfeed-web)
 #+END_SRC
-*** peep-dired
+** peep-dired
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! peep-dired)
 #+END_SRC
-*** tldr
+** tldr
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! tldr)
 #+END_SRC
-*** org-msg
+** org-msg
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! org-msg)
 #+END_SRC
-*** emojify
+** emojify
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! emojify)
 #+END_SRC
-*** selectric-mode
+** selectric-mode
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! selectric-mode)
 #+END_SRC
-*** keycast
+** keycast
 I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! keycast :pin "038475c178...")
@@ -133,7 +138,7 @@ I have stolen this from @tecosaur again..
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 #+END_SRC
-*** Org
+** Org
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! org-pretty-tags)
 #+END_SRC
@@ -143,11 +148,15 @@ I have stolen this from @tecosaur again..
 ;; (package! org-super-agenda)
 #+END_SRC
 *** +present
-#+BEGIN_SRC emacs-lisp :tangle package.el
+#+BEGIN_SRC emacs-lisp :tangle packages.el
   (package! revealjs
     :recipe (:host github :repo "hakimel/reveal.js"
              :files ("css" "dist" "js" "plugin"))
     :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
+#+END_SRC
+** Evil tutor
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! evil-tutor)
 #+END_SRC
 * Modules
 ** completion
@@ -177,7 +186,6 @@ this is to make prescient a little more intelligent
         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
 (ivy-posframe-display-at-frame-top-center))
 #+END_SRC
-
 
 ** lang
 *** Org
@@ -226,7 +234,6 @@ this is to make prescient a little more intelligent
       '(("x" "Note" entry  (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
         ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
-
 
 *** Go
 #+BEGIN_SRC emacs-lisp
@@ -304,13 +311,13 @@ theme throughout @tecosaurs config)
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
-(after! centaur-tabs
-   (setq centaur-tabs-style "box"
-     centaur-tabs-height 32
-     centaur-tabs-set-bar 'under
-     x-underline-at-descent-line t
-     centaur-tabs-close-button "×"
-     centaur-tabs-modified-marker "Ø"))
+;; (after! centaur-tabs
+;;    (setq centaur-tabs-style "box"
+;;      centaur-tabs-height 32
+;;      centaur-tabs-set-bar 'under
+;;      x-underline-at-descent-line t
+;;      centaur-tabs-close-button "×"
+;;      centaur-tabs-modified-marker "Ø"))
 ;; (use-package! centaur-tabs
 ;;  :config
 ;;  (centaur-tabs-headline-match)
@@ -609,4 +616,9 @@ These are my general keybinds (should probably split them up)
   (shell-command yeet/paint-cmd)
   )
 
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defun henlo ()
+  "henlo."
+  (interactive)(message "\"henlo\""))
 #+END_SRC
