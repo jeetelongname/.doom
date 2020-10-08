@@ -13,8 +13,6 @@
 (setq evil-split-window-below  t
       evil-vsplit-window-right t)
 
-(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
-
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
@@ -49,6 +47,18 @@
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 
+(use-package! eaf
+  :config
+  (eaf-setq eaf-browser-dark-mode "false")
+  (setq eaf-browser-default-search-engine "duckduckgo")
+  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+
+(use-package! eaf-evil ;; FIXME
+  :after eaf
+  :config
+  (setq eaf-evil-leader-keymap doom-leader-map)
+  (setq eaf-evil-leader-key "SPC"))
+
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
         company-minimum-prefix-length 2)
@@ -62,11 +72,11 @@
         ivy-wrap nil
         ivy-magic-slash-non-match-action t))
 
-(after! ivy-postframe
-  (setq ivy-posframe-border-width 20
-        ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
-        ivy-posframe-height-alist '((swiper . 20)(t . 40)))
-(ivy-posframe-display-at-frame-top-center))
+;; (after! ivy-postframe
+;;   (setq ivy-posframe-border-width 20
+;;         ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
+;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
+;; (ivy-posframe-display-at-frame-top-center))
 
 (setq org-directory "~/org-notes/")
 (after! org
@@ -107,8 +117,10 @@
 
 (after! org-capture
     (setq org-capture-templates
-      '(("x" "Note" entry  (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
-        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t))))
+      '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
+        ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+        ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
 (after! go-mode
   (set-ligatures! 'go-mode
@@ -135,6 +147,8 @@
 ;; (setq doom-theme 'doom-horizon-light-theme)
 
 (setq +doom-dashboard-name "«doom»")
+
+(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
@@ -360,6 +374,8 @@ clicked."
       :desc "kill buffer"   "d" #'message-kill-buffer
       :desc "save draft"    "S" #'message-dont-send
       :desc "attach"        "a" #'mail-add-attachment)
+
+(add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
 
 (use-package! org-msg
   :config

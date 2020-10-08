@@ -1,5 +1,5 @@
 #+TITLE: My configuration
-
+#+STARTUP: content
 
 * Introduction
 This is my literate configuration for doom emacs. I barley know elisp and I have
@@ -32,9 +32,6 @@ Frankly I don't know why this is not default
       evil-vsplit-window-right t)
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (setq-default header-line-format
@@ -158,6 +155,30 @@ I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
+** EAF
+
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! eaf :recipe
+  (:host github
+   :repo "manateelazycat/emacs-application-framework"
+   :files ("*.el" "*.py" "core" "app")
+   :no-byte-compile t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package! eaf
+  :config
+  (eaf-setq eaf-browser-dark-mode "false")
+  (setq eaf-browser-default-search-engine "duckduckgo")
+  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+
+(use-package! eaf-evil ;; FIXME
+  :after eaf
+  :config
+  (setq eaf-evil-leader-keymap doom-leader-map)
+  (setq eaf-evil-leader-key "SPC"))
+#+END_SRC
+
 * Modules
 ** completion
 *** company
@@ -180,11 +201,11 @@ this is to make prescient a little more intelligent
         ivy-magic-slash-non-match-action t))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-(after! ivy-postframe
-  (setq ivy-posframe-border-width 20
-        ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
-        ivy-posframe-height-alist '((swiper . 20)(t . 40)))
-(ivy-posframe-display-at-frame-top-center))
+;; (after! ivy-postframe
+;;   (setq ivy-posframe-border-width 20
+;;         ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
+;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
+;; (ivy-posframe-display-at-frame-top-center))
 #+END_SRC
 
 ** lang
@@ -231,8 +252,10 @@ this is to make prescient a little more intelligent
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
     (setq org-capture-templates
-      '(("x" "Note" entry  (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
-        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t))))
+      '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
+        ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+        ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 
 *** Go
@@ -278,6 +301,11 @@ My theme
 *** Doom Dashboard
 #+BEGIN_SRC emacs-lisp
 (setq +doom-dashboard-name "«doom»")
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 #+END_SRC
 *** Modeline
 #+BEGIN_SRC emacs-lisp
@@ -296,8 +324,7 @@ My theme
       doom-modeline-persp-icon t))
 #+END_SRC
 
-I stole this from @tecosaur Its frankly a great addition (this is a theme a
-theme throughout @tecosaurs config)
+I stole this from @tecosaur Its frankly a great addition (this is a throughout @tecosaurs config)
 #+BEGIN_SRC emacs-lisp
 
 (defun doom-modeline-conditional-buffer-encoding ()
@@ -398,6 +425,7 @@ will also be the width of all other printable characters."
 
 
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
 
@@ -534,6 +562,11 @@ clicked."
       :desc "kill buffer"   "d" #'message-kill-buffer
       :desc "save draft"    "S" #'message-dont-send
       :desc "attach"        "a" #'mail-add-attachment)
+#+END_SRC
+
+I want my mail to update on startup
+#+BEGIN_SRC emacs-lisp
+(add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
 #+END_SRC
 **** org-msg
 #+BEGIN_SRC emacs-lisp

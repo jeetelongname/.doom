@@ -31,9 +31,15 @@
 (package! origami)
 ;; (package! org-super-agenda)
 
-(package! revealjs
-  :recipe (:host github :repo "hakimel/reveal.js"
-           :files ("css" "dist" "js" "plugin"))
-  :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
+  (package! revealjs
+    :recipe (:host github :repo "hakimel/reveal.js"
+             :files ("css" "dist" "js" "plugin"))
+    :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
 
 (package! evil-tutor)
+
+(package! eaf :recipe
+  (:host github
+   :repo "manateelazycat/emacs-application-framework"
+   :files ("*.el" "*.py" "core" "app")
+   :no-byte-compile t))

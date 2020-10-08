@@ -17,8 +17,7 @@
        ;;ido               ; the other *other* search engine...
        (ivy
         +fuzzy
-        +prescient
-        +childframe)        ; a search engine for love and life
+        +prescient)        ; a search engine for love and life
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -154,7 +153,7 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-      (python +lsp)              ; beautiful is better than ugly
+      (python +lsp)        ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
