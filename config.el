@@ -26,27 +26,6 @@
   (discord-emacs-run "384815451978334208") ;;default
   )
 
-(use-package! keycast
-  :commands keycast-mode
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold)))
-;; (map! :leader
-;;       :desc "t k" #'keycast-mode)
-
 (use-package! eaf
   :config
   (eaf-setq eaf-browser-dark-mode "false")
@@ -78,8 +57,9 @@
 ;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
 ;; (ivy-posframe-display-at-frame-top-center))
 
-(setq org-directory "~/org-notes/")
 (after! org
+  (setq org-directory "~/org-notes/"
+        org-agenda-files (list org-directory))
   (set-face-attribute 'org-link nil
                       :weight 'normal
                       :background nil)
@@ -171,6 +151,27 @@
                           (eq buffer-file-coding-system 'utf-8)))))
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+;; (map! :leader
+;;       :desc "t k" #'keycast-mode)
 
 ;; (after! centaur-tabs
 ;;    (setq centaur-tabs-style "box"

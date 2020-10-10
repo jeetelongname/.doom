@@ -11,9 +11,6 @@
            :repo "nitros12/discord-emacs.el"
            :files ("*.el")))
 
-(package! elfeed-goodies)
-(package! elfeed-web)
-
 (package! peep-dired)
 
 (package! tldr)
@@ -24,7 +21,13 @@
 
 (package! selectric-mode)
 
-(package! keycast :pin "038475c178...")
+(package! evil-tutor)
+
+(package! eaf :recipe
+  (:host github
+   :repo "manateelazycat/emacs-application-framework"
+   :files ("*.el" "*.py" "core" "app")
+   :no-byte-compile t))
 
 (package! org-pretty-tags)
 
@@ -36,10 +39,7 @@
              :files ("css" "dist" "js" "plugin"))
     :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
 
-(package! evil-tutor)
+(package! keycast :pin "038475c178...")
 
-(package! eaf :recipe
-  (:host github
-   :repo "manateelazycat/emacs-application-framework"
-   :files ("*.el" "*.py" "core" "app")
-   :no-byte-compile t))
+(package! elfeed-goodies)
+(package! elfeed-web)

@@ -32,7 +32,7 @@ Frankly I don't know why this is not default
       evil-vsplit-window-right t)
 #+END_SRC
 
-
+I like a little padding
 #+BEGIN_SRC emacs-lisp
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))
@@ -81,12 +81,6 @@ know)
   (discord-emacs-run "384815451978334208") ;;default
   )
 #+END_SRC
-** elfeed
-I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-goodies)
-(package! elfeed-web)
-#+END_SRC
 ** peep-dired
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! peep-dired)
@@ -99,57 +93,13 @@ I needed elfeed to look a little nicer. so I got elfeed goodies which did the jo
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! org-msg)
 #+END_SRC
-** emojify
+** TODO emojify
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! emojify)
 #+END_SRC
 ** selectric-mode
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! selectric-mode)
-#+END_SRC
-** keycast
-I have stolen this from @tecosaur again..
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! keycast :pin "038475c178...")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package! keycast
-  :commands keycast-mode
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold)))
-;; (map! :leader
-;;       :desc "t k" #'keycast-mode)
-#+END_SRC
-** Org
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! org-pretty-tags)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! origami)
-;; (package! org-super-agenda)
-#+END_SRC
-*** +present
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-  (package! revealjs
-    :recipe (:host github :repo "hakimel/reveal.js"
-             :files ("css" "dist" "js" "plugin"))
-    :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
 #+END_SRC
 ** Evil tutor
 #+BEGIN_SRC emacs-lisp :tangle packages.el
@@ -211,8 +161,9 @@ this is to make prescient a little more intelligent
 ** lang
 *** Org
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/org-notes/")
 (after! org
+  (setq org-directory "~/org-notes/"
+        org-agenda-files (list org-directory))
   (set-face-attribute 'org-link nil
                       :weight 'normal
                       :background nil)
@@ -247,6 +198,7 @@ this is to make prescient a little more intelligent
                       :weight 'bold)
   (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
         org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
+
   #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -258,6 +210,22 @@ this is to make prescient a little more intelligent
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 
+**** Packages
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! org-pretty-tags)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! origami)
+;; (package! org-super-agenda)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+  (package! revealjs
+    :recipe (:host github :repo "hakimel/reveal.js"
+             :files ("css" "dist" "js" "plugin"))
+    :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
+#+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
 
@@ -335,6 +303,35 @@ I stole this from @tecosaur Its frankly a great addition (this is a throughout @
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
+#+END_SRC
+
+**** Packages
+I have stolen this from @tecosaur again..
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! keycast :pin "038475c178...")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+;; (map! :leader
+;;       :desc "t k" #'keycast-mode)
 #+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
@@ -599,6 +596,13 @@ I want my mail to update on startup
 ;; (use-package! elfeed-goodies
 ;;   :config
 ;;   (elfeed-goodies/setup))
+#+END_SRC
+
+**** Packages
+I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! elfeed-goodies)
+(package! elfeed-web)
 #+END_SRC
 * Other Stuff??
 ** Keybinds
