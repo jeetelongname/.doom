@@ -17,6 +17,8 @@
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
 
+(set-frame-parameter nil 'alpha 99)
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 
@@ -112,6 +114,9 @@
     :return "return" :yeild "yeild"))
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
+
+(map! :map cdlatex-mode-map
+    :i "TAB" #'cdlatex-tab)
 
 (setq doom-font (font-spec
        :family "Inconsolata NF"

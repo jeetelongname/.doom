@@ -38,7 +38,9 @@ I like a little padding
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
 #+END_SRC
-
+#+BEGIN_SRC emacs-lisp
+(set-frame-parameter nil 'alpha 99)
+#+END_SRC
 * Packages
 This is mostly stuff pertaining to my ~packages.el~ file and subsequent
 configuration
@@ -242,6 +244,12 @@ this is to make prescient a little more intelligent
 *** Python
 #+BEGIN_SRC emacs-lisp
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
+#+END_SRC
+*** \LaTeX
+#+BEGIN_SRC emacs-lisp
+(map! :map cdlatex-mode-map
+    :i "TAB" #'cdlatex-tab)
+
 #+END_SRC
 
 ** ui
