@@ -115,6 +115,8 @@
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 
+(setq +latex-viewers '(pdf-tools))
+
 (map! :map cdlatex-mode-map
     :i "TAB" #'cdlatex-tab)
 

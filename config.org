@@ -247,6 +247,9 @@ this is to make prescient a little more intelligent
 #+END_SRC
 *** \LaTeX
 #+BEGIN_SRC emacs-lisp
+(setq +latex-viewers '(pdf-tools))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
 (map! :map cdlatex-mode-map
     :i "TAB" #'cdlatex-tab)
 
