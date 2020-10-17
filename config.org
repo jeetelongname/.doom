@@ -344,6 +344,19 @@ I have stolen this from @tecosaur again..
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 #+END_SRC
+*** Popup
+#+BEGIN_SRC emacs-lisp
+;; (set-popup-rule!
+;;   :side 'right
+;;   :action '+popup-display-buffer-stacked-side-window-fn
+;;   )
+(plist-put +popup-defaults
+           (list
+           :side 'right
+           :action '+popup-display-buffer-stacked-side-window-fn
+           :size 0.5
+           ))
+#+END_SRC
 *** Tabs
 #+BEGIN_SRC emacs-lisp
 ;; (after! centaur-tabs

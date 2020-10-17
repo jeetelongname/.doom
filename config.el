@@ -180,6 +180,17 @@
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 
+;; (set-popup-rule!
+;;   :side 'right
+;;   :action '+popup-display-buffer-stacked-side-window-fn
+;;   )
+(plist-put +popup-defaults
+           (list
+           :side 'right
+           :action '+popup-display-buffer-stacked-side-window-fn
+           :size 0.5
+           ))
+
 ;; (after! centaur-tabs
 ;;    (setq centaur-tabs-style "box"
 ;;      centaur-tabs-height 32
