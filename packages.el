@@ -17,8 +17,6 @@
 
 (package! org-msg)
 
-(package! emojify)
-
 (package! selectric-mode)
 
 (package! evil-tutor)
@@ -29,6 +27,8 @@
    :files ("*.el" "*.py" "core" "app")
    :no-byte-compile t))
 
+(package! keycast :pin "038475c178...")
+
 (package! org-pretty-tags)
 
 (package! origami)
@@ -38,8 +38,6 @@
     :recipe (:host github :repo "hakimel/reveal.js"
              :files ("css" "dist" "js" "plugin"))
     :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
-
-(package! keycast :pin "038475c178...")
 
 (package! elfeed-goodies)
 (package! elfeed-web)

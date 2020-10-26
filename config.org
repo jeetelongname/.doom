@@ -95,10 +95,6 @@ know)
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! org-msg)
 #+END_SRC
-** TODO emojify
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! emojify)
-#+END_SRC
 ** selectric-mode
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! selectric-mode)
@@ -160,6 +156,132 @@ this is to make prescient a little more intelligent
 ;; (ivy-posframe-display-at-frame-top-center))
 #+END_SRC
 
+** ui
+*** Doom
+This is the main module to say what Doom looks like! I put all of my ont
+settings and all of that fun stuff here
+
+#+BEGIN_SRC emacs-lisp
+(setq doom-font
+      (font-spec :family "Inconsolata NF Mono" :size 15)
+      doom-big-font
+      (font-spec :family "Inconsolata NF Mono" :size 25)
+      doom-variable-pitch-font
+      (font-spec :family "Inconsolata NF Mono" :size 15))
+;; (after! doom-themes
+;;   (setq doom-themes-enable-bold t
+;;         doom-themes-enable-italic t))
+;; (custom-set-faces!
+;;   '(font-lock-comment-face :slant italic)
+;;   '(font-lock-keyword-face :slant italic))
+#+END_SRC
+
+My theme
+#+BEGIN_SRC emacs-lisp
+(setq doom-theme 'doom-horizon)
+;; (setq doom-theme 'doom-horizon-light-theme)
+#+END_SRC
+*** Doom Dashboard
+#+BEGIN_SRC emacs-lisp
+(setq +doom-dashboard-name "«doom»")
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
+#+END_SRC
+*** Modeline
+#+BEGIN_SRC emacs-lisp
+(after! doom-modeline
+  (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
+      doom-modeline-height 3
+      doom-modeline-icon 't
+      doom-modeline-modal-icon 'nil
+      doom-modeline-env-version t
+      doom-modeline-major-mode-color-icon t
+      doom-modeline-buffer-modification-icon t
+      doom-modeline-enable-word-count t
+      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+      doom-modeline-icon(display-graphic-p)
+      doom-modeline-persp-name t
+      doom-modeline-persp-icon t))
+#+END_SRC
+
+I stole this from @tecosaur Its frankly a great addition (this is a throughout @tecosaurs config)
+#+BEGIN_SRC emacs-lisp
+
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+#+END_SRC
+
+**** Packages
+I have stolen this from @tecosaur again..
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! keycast :pin "038475c178...")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+;; (map! :leader
+;;       :desc "t k" #'keycast-mode)
+#+END_SRC
+*** FIXME Popup
+#+BEGIN_SRC emacs-lisp
+;; (set-popup-rule!
+;;   :side 'right
+;;   :action '+popup-display-buffer-stacked-side-window-fn
+;;   )
+(plist-put! +popup-defaults :side 'right)
+#+END_SRC
+*** Tabs
+#+BEGIN_SRC emacs-lisp
+;; (after! centaur-tabs
+;;    (setq centaur-tabs-style "box"
+;;      centaur-tabs-height 32
+;;      centaur-tabs-set-bar 'under
+;;      x-underline-at-descent-line t
+;;      centaur-tabs-close-button "×"
+;;      centaur-tabs-modified-marker "Ø"))
+;; (use-package! centaur-tabs
+;;  :config
+;;  (centaur-tabs-headline-match)
+;;  (setq centaur-tabs-style "box"
+;;        centaur-tabs-height 32
+;;        centaur-tabs-set-bar 'under
+;;        x-underline-at-descent-line t
+;;        centaur-tabs-close-button "×"
+;;        centaur-tabs-modified-marker "Ø")
+;;  )
+#+END_SRC
+*** Treemacs
+#+BEGIN_SRC emacs-lisp
+(setq +treemacs-git-mode 'extended
+      treemacs-width 30)
+#+END_SRC
+**
 ** lang
 *** Org
 #+BEGIN_SRC emacs-lisp
@@ -244,9 +366,11 @@ this is to make prescient a little more intelligent
 *** Python
 #+BEGIN_SRC emacs-lisp
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
+(set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
 *** \LaTeX
 #+BEGIN_SRC emacs-lisp
+
 (setq +latex-viewers '(pdf-tools))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
@@ -255,133 +379,6 @@ this is to make prescient a little more intelligent
 
 #+END_SRC
 
-** ui
-*** Doom
-This is the main module to say what Doom looks like! I put all of my ont
-settings and all of that fun stuff here
-
-#+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec
-       :family "Inconsolata NF"
-       :size 15)
-      doom-big-font (font-spec
-       :family "Inconsolata NF"
-       :size 25)
-      doom-variable-pitch-font (font-spec
-       :family "Inconsolata NF"
-       :size 15))
-#+END_SRC
-
-My theme
-#+BEGIN_SRC emacs-lisp
-(setq doom-theme 'doom-horizon)
-;; (setq doom-theme 'doom-horizon-light-theme)
-#+END_SRC
-*** Doom Dashboard
-#+BEGIN_SRC emacs-lisp
-(setq +doom-dashboard-name "«doom»")
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
-#+END_SRC
-*** Modeline
-#+BEGIN_SRC emacs-lisp
-(after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
-      doom-modeline-height 3
-      doom-modeline-icon 't
-      doom-modeline-modal-icon 'nil
-      doom-modeline-env-version t
-      doom-modeline-major-mode-color-icon t
-      doom-modeline-buffer-modification-icon t
-      doom-modeline-enable-word-count t
-      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
-      doom-modeline-icon(display-graphic-p)
-      doom-modeline-persp-name t
-      doom-modeline-persp-icon t))
-#+END_SRC
-
-I stole this from @tecosaur Its frankly a great addition (this is a throughout @tecosaurs config)
-#+BEGIN_SRC emacs-lisp
-
-(defun doom-modeline-conditional-buffer-encoding ()
-  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
-  (setq-local doom-modeline-buffer-encoding
-              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
-                          (eq buffer-file-coding-system 'utf-8)))))
-
-(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
-
-#+END_SRC
-
-**** Packages
-I have stolen this from @tecosaur again..
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! keycast :pin "038475c178...")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package! keycast
-  :commands keycast-mode
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold)))
-;; (map! :leader
-;;       :desc "t k" #'keycast-mode)
-#+END_SRC
-*** Popup
-#+BEGIN_SRC emacs-lisp
-;; (set-popup-rule!
-;;   :side 'right
-;;   :action '+popup-display-buffer-stacked-side-window-fn
-;;   )
-(plist-put +popup-defaults
-           (list
-           :side 'right
-           :action '+popup-display-buffer-stacked-side-window-fn
-           :size 0.5
-           ))
-#+END_SRC
-*** Tabs
-#+BEGIN_SRC emacs-lisp
-;; (after! centaur-tabs
-;;    (setq centaur-tabs-style "box"
-;;      centaur-tabs-height 32
-;;      centaur-tabs-set-bar 'under
-;;      x-underline-at-descent-line t
-;;      centaur-tabs-close-button "×"
-;;      centaur-tabs-modified-marker "Ø"))
-;; (use-package! centaur-tabs
-;;  :config
-;;  (centaur-tabs-headline-match)
-;;  (setq centaur-tabs-style "box"
-;;        centaur-tabs-height 32
-;;        centaur-tabs-set-bar 'under
-;;        x-underline-at-descent-line t
-;;        centaur-tabs-close-button "×"
-;;        centaur-tabs-modified-marker "Ø")
-;;  )
-#+END_SRC
-*** Treemacs
-#+BEGIN_SRC emacs-lisp
-(setq +treemacs-git-mode 'extended
-      treemacs-width 30)
-#+END_SRC
 ** email
 *** mu4e
 #+BEGIN_SRC emacs-lisp
@@ -446,6 +443,7 @@ will also be the width of all other printable characters."
 
 
 #+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
@@ -664,6 +662,16 @@ These are my general keybinds (should probably split them up)
 #+END_SRC
 ** funky functions
 #+BEGIN_SRC emacs-lisp
+(defun yeet/reload ()
+  "A simple cmd to make reloading m config easier"
+  (interactive)
+  (load! "config" doom-private-dir)
+  (message "Reloaded!"))
+
+(map! :leader
+      "h r c" #'yeet/reload)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
 (defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
   "where to put the picture")
 (defvar yeet/paint-ask t
@@ -674,9 +682,7 @@ These are my general keybinds (should probably split them up)
 (defun yeet/paint-insert()
   ""
   (interactive)
-  (shell-command yeet/paint-cmd)
-  )
-
+  (shell-command yeet/paint-cmd))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
 (defun henlo ()

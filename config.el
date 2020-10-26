@@ -59,76 +59,18 @@
 ;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
 ;; (ivy-posframe-display-at-frame-top-center))
 
-(after! org
-  (setq org-directory "~/org-notes/"
-        org-agenda-files (list org-directory))
-  (set-face-attribute 'org-link nil
-                      :weight 'normal
-                      :background nil)
-  (set-face-attribute 'org-code nil
-                      :background nil)
-  (set-face-attribute 'org-date nil
-                      :foreground "#5b6268"
-                      :background nil)
-  (set-face-attribute 'org-level-1 nil
-                      :background nil
-                      :height 1.2
-                      :weight 'normal)
-  (set-face-attribute 'org-level-2 nil
-                      :background nil
-                      :height 1.0
-                      :weight 'normal)
-  (set-face-attribute 'org-level-3 nil
-                      :background nil
-                      :height 1.0
-                      :weight 'normal)
-  (set-face-attribute 'org-level-4 nil
-                      :background nil
-                      :height 1.0
-                      :weight 'normal)
-  (set-face-attribute 'org-level-5 nil
-                      :weight 'normal)
-  (set-face-attribute 'org-level-6 nil
-                      :weight 'normal)
-  (set-face-attribute 'org-document-title nil
-                      :background nil
-                      :height 1.75
-                      :weight 'bold)
-  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
-        org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
-
-(after! org-capture
-    (setq org-capture-templates
-      '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
-        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
-        ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
-        ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
-
-(after! go-mode
-  (set-ligatures! 'go-mode
-    :def "func"
-    :true "true" :false "false"
-    :int "int" :str "string"
-    :float "float" :bool "bool"
-    :for "for"
-    :return "return" :yeild "yeild"))
-
-(setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
-
-(setq +latex-viewers '(pdf-tools))
-
-(map! :map cdlatex-mode-map
-    :i "TAB" #'cdlatex-tab)
-
-(setq doom-font (font-spec
-       :family "Inconsolata NF"
-       :size 15)
-      doom-big-font (font-spec
-       :family "Inconsolata NF"
-       :size 25)
-      doom-variable-pitch-font (font-spec
-       :family "Inconsolata NF"
-       :size 15))
+(setq doom-font
+      (font-spec :family "Inconsolata NF Mono" :size 15)
+      doom-big-font
+      (font-spec :family "Inconsolata NF Mono" :size 25)
+      doom-variable-pitch-font
+      (font-spec :family "Inconsolata NF Mono" :size 15))
+;; (after! doom-themes
+;;   (setq doom-themes-enable-bold t
+;;         doom-themes-enable-italic t))
+;; (custom-set-faces!
+;;   '(font-lock-comment-face :slant italic)
+;;   '(font-lock-keyword-face :slant italic))
 
 (setq doom-theme 'doom-horizon)
 ;; (setq doom-theme 'doom-horizon-light-theme)
@@ -184,12 +126,7 @@
 ;;   :side 'right
 ;;   :action '+popup-display-buffer-stacked-side-window-fn
 ;;   )
-(plist-put +popup-defaults
-           (list
-           :side 'right
-           :action '+popup-display-buffer-stacked-side-window-fn
-           :size 0.5
-           ))
+(plist-put! +popup-defaults :side 'right)
 
 ;; (after! centaur-tabs
 ;;    (setq centaur-tabs-style "box"
@@ -211,6 +148,68 @@
 
 (setq +treemacs-git-mode 'extended
       treemacs-width 30)
+
+(after! org
+  (setq org-directory "~/org-notes/"
+        org-agenda-files (list org-directory))
+  (set-face-attribute 'org-link nil
+                      :weight 'normal
+                      :background nil)
+  (set-face-attribute 'org-code nil
+                      :background nil)
+  (set-face-attribute 'org-date nil
+                      :foreground "#5b6268"
+                      :background nil)
+  (set-face-attribute 'org-level-1 nil
+                      :background nil
+                      :height 1.2
+                      :weight 'normal)
+  (set-face-attribute 'org-level-2 nil
+                      :background nil
+                      :height 1.0
+                      :weight 'normal)
+  (set-face-attribute 'org-level-3 nil
+                      :background nil
+                      :height 1.0
+                      :weight 'normal)
+  (set-face-attribute 'org-level-4 nil
+                      :background nil
+                      :height 1.0
+                      :weight 'normal)
+  (set-face-attribute 'org-level-5 nil
+                      :weight 'normal)
+  (set-face-attribute 'org-level-6 nil
+                      :weight 'normal)
+  (set-face-attribute 'org-document-title nil
+                      :background nil
+                      :height 1.75
+                      :weight 'bold)
+  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
+        org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
+
+(after! org-capture
+    (setq org-capture-templates
+      '(("x" "Note" entry (file+olp+datetree "journal.org") "**** %T %?" :prepend t :kill-buffer t)
+        ("t" "Task" entry (file+headline "tasks.org" "Inbox") "**** TODO %U %?\n%i" :prepend t :kill-buffer t)
+        ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
+        ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
+
+(after! go-mode
+  (set-ligatures! 'go-mode
+    :def "func"
+    :true "true" :false "false"
+    :int "int" :str "string"
+    :float "float" :bool "bool"
+    :for "for"
+    :return "return" :yeild "yeild"))
+
+(setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
+(set-repl-handler! 'python-mode #'+python/open-ipython-repl)
+
+(setq +latex-viewers '(pdf-tools))
+
+(map! :map cdlatex-mode-map
+    :i "TAB" #'cdlatex-tab)
 
 (after! mu4e
   (setq +mu4e-backend 'offlineimap
@@ -446,6 +445,15 @@ clicked."
 (add-hook 'text-mode-hook #'auto-fill-mode)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
+(defun yeet/reload ()
+  "A simple cmd to make reloading m config easier"
+  (interactive)
+  (load! "config" doom-private-dir)
+  (message "Reloaded!"))
+
+(map! :leader
+      "h r c" #'yeet/reload)
+
 (defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
   "where to put the picture")
 (defvar yeet/paint-ask t
@@ -456,8 +464,7 @@ clicked."
 (defun yeet/paint-insert()
   ""
   (interactive)
-  (shell-command yeet/paint-cmd)
-  )
+  (shell-command yeet/paint-cmd))
 
 (defun henlo ()
   "henlo."
