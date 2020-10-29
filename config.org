@@ -41,6 +41,17 @@ I like a little padding
 #+BEGIN_SRC emacs-lisp
 (set-frame-parameter nil 'alpha 99)
 #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(let ((width  500)
+      (height 250)
+      (display-height (display-pixel-height))
+      (display-width  (display-pixel-width)))
+  (pushnew! initial-frame-alist
+            `(left . ,(- (/ display-width 2) (/ width 2)))
+            `(top . ,(- (/ display-height 2) (/ height 2)))
+            `(width text-pixels ,width)
+            `(height text-pixels ,height)))
+#+END_SRC
 * Packages
 This is mostly stuff pertaining to my ~packages.el~ file and subsequent
 configuration
@@ -148,6 +159,7 @@ this is to make prescient a little more intelligent
         ivy-wrap nil
         ivy-magic-slash-non-match-action t))
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 ;; (after! ivy-postframe
 ;;   (setq ivy-posframe-border-width 20
@@ -163,11 +175,11 @@ settings and all of that fun stuff here
 
 #+BEGIN_SRC emacs-lisp
 (setq doom-font
-      (font-spec :family "Inconsolata NF Mono" :size 15)
+      (font-spec :family "Inconsolata NF" :size 15)
       doom-big-font
-      (font-spec :family "Inconsolata NF Mono" :size 25)
+      (font-spec :family "Inconsolata NF" :size 25)
       doom-variable-pitch-font
-      (font-spec :family "Inconsolata NF Mono" :size 15))
+      (font-spec :family "Inconsolata NF" :size 15))
 ;; (after! doom-themes
 ;;   (setq doom-themes-enable-bold t
 ;;         doom-themes-enable-italic t))
@@ -322,8 +334,8 @@ I have stolen this from @tecosaur again..
                       :weight 'bold)
   (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
         org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
-
   #+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
 (after! org-capture
@@ -368,6 +380,9 @@ I have stolen this from @tecosaur again..
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
+
+#+RESULTS:
+
 *** \LaTeX
 #+BEGIN_SRC emacs-lisp
 
@@ -382,10 +397,11 @@ I have stolen this from @tecosaur again..
 ** email
 *** mu4e
 #+BEGIN_SRC emacs-lisp
+(setq +mu4e-backend 'offlineimap)
 (after! mu4e
-  (setq +mu4e-backend 'offlineimap
-        mail-user-agent 'mu4e-user-agent
-        mu4e-view-use-gnus t))
+  (setq
+   mail-user-agent 'mu4e-user-agent
+   mu4e-view-use-gnus t))
 #+END_SRC
 I have stolen this from @tecosaur again
 #+BEGIN_SRC emacs-lisp
@@ -443,7 +459,6 @@ will also be the width of all other printable characters."
 
 
 #+END_SRC
-
 
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
@@ -570,7 +585,6 @@ clicked."
                       (mu4e-trash-folder      . "/gmail.com/Trash")
                       (mu4e-refile-folder     . "/gmail.com/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com")
-                      (user-mail-address      . "jeetelongname@gmail.com")
                       )t)
 #+END_SRC
 

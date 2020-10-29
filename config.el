@@ -19,6 +19,16 @@
 
 (set-frame-parameter nil 'alpha 99)
 
+(let ((width  500)
+      (height 250)
+      (display-height (display-pixel-height))
+      (display-width  (display-pixel-width)))
+  (pushnew! initial-frame-alist
+            `(left . ,(- (/ display-width 2) (/ width 2)))
+            `(top . ,(- (/ display-height 2) (/ height 2)))
+            `(width text-pixels ,width)
+            `(height text-pixels ,height)))
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 
@@ -60,11 +70,11 @@
 ;; (ivy-posframe-display-at-frame-top-center))
 
 (setq doom-font
-      (font-spec :family "Inconsolata NF Mono" :size 15)
+      (font-spec :family "Inconsolata NF" :size 15)
       doom-big-font
-      (font-spec :family "Inconsolata NF Mono" :size 25)
+      (font-spec :family "Inconsolata NF" :size 25)
       doom-variable-pitch-font
-      (font-spec :family "Inconsolata NF Mono" :size 15))
+      (font-spec :family "Inconsolata NF" :size 15))
 ;; (after! doom-themes
 ;;   (setq doom-themes-enable-bold t
 ;;         doom-themes-enable-italic t))
@@ -211,10 +221,11 @@
 (map! :map cdlatex-mode-map
     :i "TAB" #'cdlatex-tab)
 
+(setq +mu4e-backend 'offlineimap)
 (after! mu4e
-  (setq +mu4e-backend 'offlineimap
-        mail-user-agent 'mu4e-user-agent
-        mu4e-view-use-gnus t))
+  (setq
+   mail-user-agent 'mu4e-user-agent
+   mu4e-view-use-gnus t))
 
 (after! mu4e
   (defun my-string-width (str)
@@ -383,7 +394,6 @@ clicked."
                       (mu4e-trash-folder      . "/gmail.com/Trash")
                       (mu4e-refile-folder     . "/gmail.com/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com")
-                      (user-mail-address      . "jeetelongname@gmail.com")
                       )t)
 
 (map! :localleader ; HACK ; works but is now in all org buffers
