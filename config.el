@@ -221,7 +221,7 @@
 (map! :map cdlatex-mode-map
     :i "TAB" #'cdlatex-tab)
 
-(setq +mu4e-backend 'offlineimap)
+(setq +mu4e-backend 'mbsync)
 (after! mu4e
   (setq
    mail-user-agent 'mu4e-user-agent
@@ -388,11 +388,11 @@ clicked."
 
 (setq evil-collection-mu4e-end-region-misc "quit")
 
-(set-email-account! "gmail.com"
-                    '((mu4e-sent-folder       . "/gmail.com/Sent Mail")
-                      (mu4e-drafts-folder     . "/gmail.com/Drafts")
-                      (mu4e-trash-folder      . "/gmail.com/Trash")
-                      (mu4e-refile-folder     . "/gmail.com/All Mail")
+(set-email-account! "gmail"
+                    '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
+                      (mu4e-drafts-folder     . "/gmail/\[Gmail\]/Drafts")
+                      (mu4e-trash-folder      . "/gmail/\[Gmail\]/Trash")
+                      (mu4e-refile-folder     . "/gmail/\[Gmail\]/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com")
                       )t)
 
