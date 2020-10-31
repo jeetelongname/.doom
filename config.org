@@ -21,12 +21,13 @@ This is the stuff that does not really belong in any module but is useful
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
 #+END_SRC
-
+if a file has changed on disk I dont want that old file sticking around
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode t)
 #+END_SRC
 
 Frankly I don't know why this is not default
+(it automatically switches to a split)
 #+BEGIN_SRC emacs-lisp
 (setq evil-split-window-below  t
       evil-vsplit-window-right t)
@@ -37,9 +38,6 @@ I like a little padding
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-(set-frame-parameter nil 'alpha 99)
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
 (let ((width  500)
@@ -266,8 +264,22 @@ I have stolen this from @tecosaur again..
 ;;   :side 'right
 ;;   :action '+popup-display-buffer-stacked-side-window-fn
 ;;   )
-(plist-put! +popup-defaults :side 'right)
+(plist-put! +popup-defaults :actions '+popup-display-buffer-stacked-side-window-fn)
+;; ;; `set-popup-rule!'
+;; (plist-put! +popup-defaults :side 'right)
+(setq +popup-defaults
+      (list :side   'right
+            :height 0.16
+            :width  40
+            :quit   t
+            :select #'ignore
+            :actions '+popup-display-buffer-stacked-side-window-fn
+            :ttl    5))
 #+END_SRC
+
+#+RESULTS:
+| :side | right | :height | 0.16 | :width | 40 | :quit | t | :select | ignore | :ttl | 5 | :action | +popup-display-buffer-stacked-side-window-fn | :actions | +popup-display-buffer-stacked-side-window-fn |
+
 *** Tabs
 #+BEGIN_SRC emacs-lisp
 ;; (after! centaur-tabs
@@ -294,6 +306,12 @@ I have stolen this from @tecosaur again..
       treemacs-width 30)
 #+END_SRC
 **
+** emacs
+*** dired
+#+begin_src emacs-lisp
+(setq dired-dwim-target t)
+#+end_src
+
 ** lang
 *** Org
 #+BEGIN_SRC emacs-lisp
@@ -599,6 +617,7 @@ clicked."
 
 I want my mail to update on startup
 #+BEGIN_SRC emacs-lisp
+;; FIXME
 (add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
 #+END_SRC
 **** org-msg

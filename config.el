@@ -17,8 +17,6 @@
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
 
-(set-frame-parameter nil 'alpha 99)
-
 (let ((width  500)
       (height 250)
       (display-height (display-pixel-height))
@@ -136,7 +134,17 @@
 ;;   :side 'right
 ;;   :action '+popup-display-buffer-stacked-side-window-fn
 ;;   )
-(plist-put! +popup-defaults :side 'right)
+(plist-put! +popup-defaults :actions '+popup-display-buffer-stacked-side-window-fn)
+;; ;; `set-popup-rule!'
+;; (plist-put! +popup-defaults :side 'right)
+(setq +popup-defaults
+      (list :side   'right
+            :height 0.16
+            :width  40
+            :quit   t
+            :select #'ignore
+            :actions '+popup-display-buffer-stacked-side-window-fn
+            :ttl    5))
 
 ;; (after! centaur-tabs
 ;;    (setq centaur-tabs-style "box"
@@ -158,6 +166,8 @@
 
 (setq +treemacs-git-mode 'extended
       treemacs-width 30)
+
+(setq dired-dwim-target t)
 
 (after! org
   (setq org-directory "~/org-notes/"
@@ -403,6 +413,7 @@ clicked."
       :desc "save draft"    "S" #'message-dont-send
       :desc "attach"        "a" #'mail-add-attachment)
 
+;; FIXME
 (add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
 
 (use-package! org-msg
