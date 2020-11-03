@@ -27,6 +27,8 @@
    :files ("*.el" "*.py" "core" "app")
    :no-byte-compile t))
 
+(package! atomic-chrome)
+
 (package! keycast :pin "038475c178...")
 
 (package! org-pretty-tags)

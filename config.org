@@ -135,6 +135,23 @@ know)
   (setq eaf-evil-leader-keymap doom-leader-map)
   (setq eaf-evil-leader-key "SPC"))
 #+END_SRC
+** atomic chrome
+#+begin_src emacs-lisp :tangle packages.el
+(package! atomic-chrome)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! atomic-chrome
+  :after-call focus-out-hook
+  :config
+  (setq atomic-chrome-buffer-open-style 'frame
+        atomic-chrome-default-major-mode 'markdown-mode
+        atomic-chrome-url-major-mode-alist
+        '(("github.\\.com" . gfm-mode)
+          ("reddit\\.com" . fundamental-mode)))
+
+  (atomic-chrome-start-server))
+#+end_src
 
 * Modules
 ** completion

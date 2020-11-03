@@ -48,6 +48,17 @@
   (setq eaf-evil-leader-keymap doom-leader-map)
   (setq eaf-evil-leader-key "SPC"))
 
+(use-package! atomic-chrome
+  :after-call focus-out-hook
+  :config
+  (setq atomic-chrome-buffer-open-style 'frame
+        atomic-chrome-default-major-mode 'markdown-mode
+        atomic-chrome-url-major-mode-alist
+        '(("github.\\.com" . gfm-mode)
+          ("reddit\\.com" . fundamental-mode)))
+
+  (atomic-chrome-start-server))
+
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
         company-minimum-prefix-length 2)
