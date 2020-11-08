@@ -92,7 +92,7 @@
 ;;   '(font-lock-keyword-face :slant italic))
 
 (setq doom-theme 'doom-horizon)
-;; (setq doom-theme 'doom-horizon-light-theme)
+;;(setq doom-theme 'doom-horizon-light-theme)
 
 (setq +doom-dashboard-name "«doom»")
 
@@ -183,38 +183,33 @@
 (after! org
   (setq org-directory "~/org-notes/"
         org-agenda-files (list org-directory))
-  (set-face-attribute 'org-link nil
-                      :weight 'normal
-                      :background nil)
-  (set-face-attribute 'org-code nil
-                      :background nil)
-  (set-face-attribute 'org-date nil
-                      :foreground "#5b6268"
-                      :background nil)
-  (set-face-attribute 'org-level-1 nil
-                      :background nil
-                      :height 1.2
-                      :weight 'normal)
-  (set-face-attribute 'org-level-2 nil
-                      :background nil
-                      :height 1.0
-                      :weight 'normal)
-  (set-face-attribute 'org-level-3 nil
-                      :background nil
-                      :height 1.0
-                      :weight 'normal)
-  (set-face-attribute 'org-level-4 nil
-                      :background nil
-                      :height 1.0
-                      :weight 'normal)
-  (set-face-attribute 'org-level-5 nil
-                      :weight 'normal)
-  (set-face-attribute 'org-level-6 nil
-                      :weight 'normal)
-  (set-face-attribute 'org-document-title nil
-                      :background nil
-                      :height 1.75
-                      :weight 'bold)
+  (custom-set-faces! 'org-date nil
+    :foreground "#5b6268"
+    :background nil)
+  (custom-set-faces! 'org-level-1 nil
+    :background nil
+    :height 1.2
+    :weight 'normal)
+  (custom-set-faces! 'org-level-2 nil
+    :background nil
+    :height 1.0
+    :weight 'normal)
+  (custom-set-faces! 'org-level-3 nil
+    :background nil
+    :height 1.0
+    :weight 'normal)
+  (custom-set-faces! 'org-level-4 nil
+    :background nil
+    :height 1.0
+    :weight 'normal)
+  (custom-set-faces! 'org-level-5 nil
+    :weight 'normal)
+  (custom-set-faces! 'org-level-6 nil
+    :weight 'normal)
+  (custom-set-faces! 'org-document-title nil
+    :background nil
+    :height 1.75
+    :weight 'bold)
   (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
         org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
 
@@ -426,6 +421,12 @@ clicked."
 
 ;; FIXME
 (add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
+
+(setq sendmail-program (executable-find "msmtp")
+      send-mail-function #'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from")
+      message-send-mail-function #'message-send-mail-with-sendmail)
 
 (use-package! org-msg
   :config

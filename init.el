@@ -25,7 +25,6 @@
        doom-dashboard      ; a nifty splash screen for Emacs
        doom-quit           ; DOOM quit-message prompts when you quit Emacs
        (emoji +unicode
-              +ascii
               +github)     ; 🙂
        ;; fill-column      ; a `fill-column' indicator
        hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -55,7 +54,7 @@
        file-templates      ; auto-snippets for empty files
        fold                ; (nigh) universal code folding
        (format +onsave)    ; automated prettiness
-       ;;god               ; run Emacs commands without modifier keys
+       ;; god               ; run Emacs commands without modifier keys
        ;;lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors    ; editing in many places at once
        ;;objed             ; text object editing for the innocent
@@ -151,7 +150,6 @@
        (org
         +dragndrop
         +pandoc
-        +pretty
         +present
         +noter)            ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
