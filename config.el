@@ -118,7 +118,7 @@
               (unless (or (eq buffer-file-coding-system 'utf-8-unix)
                           (eq buffer-file-coding-system 'utf-8)))))
 
-(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+(add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
 (use-package! keycast
   :commands keycast-mode
@@ -183,35 +183,36 @@
 (after! org
   (setq org-directory "~/org-notes/"
         org-agenda-files (list org-directory))
-  (custom-set-faces! 'org-date nil
-    :foreground "#5b6268"
-    :background nil)
-  (custom-set-faces! 'org-level-1 nil
-    :background nil
-    :height 1.2
-    :weight 'normal)
-  (custom-set-faces! 'org-level-2 nil
-    :background nil
-    :height 1.0
-    :weight 'normal)
-  (custom-set-faces! 'org-level-3 nil
-    :background nil
-    :height 1.0
-    :weight 'normal)
-  (custom-set-faces! 'org-level-4 nil
-    :background nil
-    :height 1.0
-    :weight 'normal)
-  (custom-set-faces! 'org-level-5 nil
-    :weight 'normal)
-  (custom-set-faces! 'org-level-6 nil
-    :weight 'normal)
-  (custom-set-faces! 'org-document-title nil
-    :background nil
-    :height 1.75
-    :weight 'bold)
-  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
-        org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
+  ;; (custom-set-faces! 'org-date nil
+  ;;   :foreground "#5b6268"
+  ;;   :background nil)
+  ;; (custom-set-faces! 'org-level-1 nil
+  ;;   :background nil
+  ;;   :height 1.2
+  ;;   :weight 'normal)
+  ;; (custom-set-faces! 'org-level-2 nil
+  ;;   :background nil
+  ;;   :height 1.0
+  ;;   :weight 'normal)
+  ;; (custom-set-faces! 'org-level-3 nil
+  ;;   :background nil
+  ;;   :height 1.0
+  ;;   :weight 'normal)
+  ;; (custom-set-faces! 'org-level-4 nil
+  ;;   :background nil
+  ;;   :height 1.0
+  ;;   :weight 'normal)
+  ;; (custom-set-faces! 'org-level-5 nil
+  ;;   :weight 'normal)
+  ;; (custom-set-faces! 'org-level-6 nil
+  ;;   :weight 'normal)
+  ;; (custom-set-faces! 'org-document-title nil
+  ;;   :background nil
+  ;;   :height 1.75
+  ;;   :weight 'bold)
+  ;; (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
+  ;;       org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))
+)
 
 (after! org-capture
     (setq org-capture-templates

@@ -83,7 +83,7 @@
 
        :tools
        ;;ansible
-       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
        editorconfig        ; let someone else argue about tabs vs spaces
@@ -151,6 +151,7 @@
         +dragndrop
         +pandoc
         +present
+        -pretty
         +noter)            ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
