@@ -78,18 +78,32 @@
 ;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
 ;; (ivy-posframe-display-at-frame-top-center))
 
-(setq doom-font
+(setq! doom-font
       (font-spec :family "Inconsolata NF" :size 15)
       doom-big-font
       (font-spec :family "Inconsolata NF" :size 25)
       doom-variable-pitch-font
       (font-spec :family "Inconsolata NF" :size 15))
-;; (after! doom-themes
-;;   (setq doom-themes-enable-bold t
-;;         doom-themes-enable-italic t))
-;; (custom-set-faces!
-;;   '(font-lock-comment-face :slant italic)
-;;   '(font-lock-keyword-face :slant italic))
+
+;;(setq! doom-font
+;;      (font-spec :family "Inconsolata" :size 15)
+;;      doom-big-font
+;;      (font-spec :family "Inconsolata" :size 25)
+;;      doom-variable-pitch-font
+;;      (font-spec :family "Inconsolata" :size 15))
+
+;; (setq! doom-font
+;;       (font-spec :family "Comic Mono" :size 15)
+;;       doom-big-font
+;;       (font-spec :family "Comic Mono" :size 25))
+
+(after! doom-themes
+  (setq! doom-themes-enable-bold t
+        doom-themes-enable-italic t
+        doom-horizon-brighter-comments t))
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
 
 (setq doom-theme 'doom-horizon)
 ;;(setq doom-theme 'doom-horizon-light-theme)
@@ -157,13 +171,14 @@
             :actions '+popup-display-buffer-stacked-side-window-fn
             :ttl    5))
 
-;; (after! centaur-tabs
-;;    (setq centaur-tabs-style "box"
-;;      centaur-tabs-height 32
-;;      centaur-tabs-set-bar 'under
-;;      x-underline-at-descent-line t
-;;      centaur-tabs-close-button "×"
-;;      centaur-tabs-modified-marker "Ø"))
+(when (featurep! :ui tabs)
+(after! centaur-tabs
+   (setq centaur-tabs-style "box"
+     centaur-tabs-height 32
+     centaur-tabs-set-bar 'under
+     x-underline-at-descent-line t
+     centaur-tabs-close-button "×"
+     centaur-tabs-modified-marker "Ø")))
 ;; (use-package! centaur-tabs
 ;;  :config
 ;;  (centaur-tabs-headline-match)
@@ -183,35 +198,36 @@
 (after! org
   (setq org-directory "~/org-notes/"
         org-agenda-files (list org-directory))
-  ;; (custom-set-faces! 'org-date nil
+  ;; (custom-set-faces! '(org-date nil
   ;;   :foreground "#5b6268"
-  ;;   :background nil)
-  ;; (custom-set-faces! 'org-level-1 nil
+  ;;   :background nil))
+  ;; (custom-set-faces! '(org-level-1 nil
   ;;   :background nil
   ;;   :height 1.2
-  ;;   :weight 'normal)
-  ;; (custom-set-faces! 'org-level-2 nil
+  ;;   :weight 'normal))
+  ;; (custom-set-faces! '(org-level-2 nil
   ;;   :background nil
   ;;   :height 1.0
-  ;;   :weight 'normal)
-  ;; (custom-set-faces! 'org-level-3 nil
+  ;;   :weight 'normal))
+  ;; (custom-set-faces! '(org-level-3 nil
   ;;   :background nil
   ;;   :height 1.0
-  ;;   :weight 'normal)
-  ;; (custom-set-faces! 'org-level-4 nil
+  ;;   :weight 'normal))
+  ;; (custom-set-faces! '(org-level-4 nil
   ;;   :background nil
   ;;   :height 1.0
-  ;;   :weight 'normal)
-  ;; (custom-set-faces! 'org-level-5 nil
-  ;;   :weight 'normal)
-  ;; (custom-set-faces! 'org-level-6 nil
-  ;;   :weight 'normal)
-  ;; (custom-set-faces! 'org-document-title nil
+  ;;   :weight 'normal))
+  ;; (custom-set-faces! '(org-level-5 nil
+  ;;   :weight 'normal))
+  ;; (custom-set-faces! '(org-level-6 nil
+  ;;   :weight 'normal))
+  ;; (custom-set-faces! '(org-document-title nil
   ;;   :background nil
   ;;   :height 1.75
-  ;;   :weight 'bold)
-  ;; (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
-  ;;       org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))
+  ;;   :weight 'bold))
+(when (featurep! :lang org +pretty )
+  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
+        org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
 )
 
 (after! org-capture
