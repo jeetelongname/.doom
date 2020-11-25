@@ -2,7 +2,7 @@
 #+STARTUP: content
 
 * Introduction
-This is my literate configuration for doom emacs. I barley know elisp and I have
+This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
 mostly stolen snippets for others.
 
 Lets get this config started!
@@ -152,6 +152,22 @@ know)
 
   (atomic-chrome-start-server))
 #+end_src
+** Themes
+#+begin_src emacs-lisp :tangle packages.el
+(package! horizon-theme)
+(unpin! doom-themes)
+#+end_src
+** Nyan
+#+begin_src emacs-lisp :tangle packages.el
+(package! nyan-mode)
+#+end_src
+#+begin_src emacs-lisp
+(use-package! nyan-mode
+  :after doom-modeline
+  :config
+  (nyan-mode)
+  (nyan-start-animation))
+#+end_src
 
 * Modules
 ** completion
@@ -218,10 +234,12 @@ settings and all of that fun stuff here
 #+END_SRC
 
 My theme
+this will load up 2 diffrent themes one for the terminal and one for the gui
 #+BEGIN_SRC emacs-lisp
- (setq doom-theme 'doom-horizon)
+(when (not(display-graphic-p)) (setq doom-theme 'horizon))
+(setq doom-theme 'doom-horizon)
 ;;(setq doom-theme 'doom-horizon-light-theme)
-#+END_SRC
+#+end_src
 *** Doom Dashboard
 #+BEGIN_SRC emacs-lisp
 (setq +doom-dashboard-name "«doom»")
@@ -235,20 +253,20 @@ My theme
 #+BEGIN_SRC emacs-lisp
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
-      doom-modeline-height 3
-      doom-modeline-icon 't
-      doom-modeline-modal-icon 'nil
-      doom-modeline-env-version t
-      doom-modeline-major-mode-color-icon t
-      doom-modeline-buffer-modification-icon t
-      doom-modeline-enable-word-count t
-      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
-      doom-modeline-icon(display-graphic-p)
-      doom-modeline-persp-name t
-      doom-modeline-persp-icon t))
+        doom-modeline-height 3
+        doom-modeline-icon 't
+        doom-modeline-modal-icon 'nil
+        doom-modeline-env-version t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-modification-icon t
+        doom-modeline-enable-word-count t
+        doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+        doom-modeline-icon (display-graphic-p)
+        doom-modeline-persp-name t
+        doom-modeline-persp-icon t))
 #+END_SRC
 
-I stole this from @tecosaur Its frankly a great addition (this is a throughout @tecosaurs config)
+I stole this from @tecosaur Its frankly a great addition (this is a theme throughout @tecosaurs config)
 #+BEGIN_SRC emacs-lisp
 
 (defun doom-modeline-conditional-buffer-encoding ()
@@ -334,6 +352,24 @@ I have stolen this from @tecosaur again..
 (setq +treemacs-git-mode 'extended
       treemacs-width 30)
 #+END_SRC
+** tools
+*** debugger
+#+begin_src emacs-lisp
+(setq dap-auto-configure-features '(sessions locals controls tooltip)
+      dap-python-executable "python3")
+#+end_src
+#+begin_src emacs-lisp
+;; (add-hook! 'python-mode-hook #'(require 'dap-python))
+#+end_src
+#+begin_src emacs-lisp
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
+#+end_src
+#+begin_src emacs-lisp
+(map! :leader "od" nil
+      :leader "od" #'dap-debug)
+
+#+end_src
 ** emacs
 *** dired
 #+begin_src emacs-lisp
@@ -755,3 +791,11 @@ These are my general keybinds (should probably split them up)
   "henlo."
   (interactive)(message "\"henlo\""))
 #+END_SRC
+
+#+begin_src emacs-lisp
+(defun stop ()
+  (interactive)
+  (defvar name "*I can quit at any time*")
+  (switch-to-buffer (get-buffer-create name))
+  (insert "I can stop at any time\nI am in control"))
+#+end_src

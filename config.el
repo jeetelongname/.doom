@@ -59,6 +59,12 @@
 
   (atomic-chrome-start-server))
 
+(use-package! nyan-mode
+  :after doom-modeline
+  :config
+  (nyan-mode)
+  (nyan-start-animation))
+
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
         company-minimum-prefix-length 2)
@@ -105,6 +111,7 @@
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
+(when (not(display-graphic-p)) (setq doom-theme 'horizon))
 (setq doom-theme 'doom-horizon)
 ;;(setq doom-theme 'doom-horizon-light-theme)
 
@@ -114,17 +121,17 @@
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
-      doom-modeline-height 3
-      doom-modeline-icon 't
-      doom-modeline-modal-icon 'nil
-      doom-modeline-env-version t
-      doom-modeline-major-mode-color-icon t
-      doom-modeline-buffer-modification-icon t
-      doom-modeline-enable-word-count t
-      doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
-      doom-modeline-icon(display-graphic-p)
-      doom-modeline-persp-name t
-      doom-modeline-persp-icon t))
+        doom-modeline-height 3
+        doom-modeline-icon 't
+        doom-modeline-modal-icon 'nil
+        doom-modeline-env-version t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-modification-icon t
+        doom-modeline-enable-word-count t
+        doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+        doom-modeline-icon (display-graphic-p)
+        doom-modeline-persp-name t
+        doom-modeline-persp-icon t))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -192,6 +199,17 @@
 
 (setq +treemacs-git-mode 'extended
       treemacs-width 30)
+
+(setq dap-auto-configure-features '(sessions locals controls tooltip)
+      dap-python-executable "python3")
+
+;; (add-hook! 'python-mode-hook #'(require 'dap-python))
+
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
+
+(map! :leader "od" nil
+      :leader "od" #'dap-debug)
 
 (setq dired-dwim-target t)
 
@@ -519,3 +537,9 @@ clicked."
 (defun henlo ()
   "henlo."
   (interactive)(message "\"henlo\""))
+
+(defun stop ()
+  (interactive)
+  (defvar name "*I can quit at any time*")
+  (switch-to-buffer (get-buffer-create name))
+  (insert "I can stop at any time\nI am in control"))

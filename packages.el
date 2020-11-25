@@ -29,6 +29,11 @@
 
 (package! atomic-chrome)
 
+(package! horizon-theme)
+(unpin! doom-themes)
+
+(package! nyan-mode)
+
 (package! keycast :pin "038475c178...")
 
 (package! org-pretty-tags)
