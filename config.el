@@ -59,11 +59,14 @@
 
   (atomic-chrome-start-server))
 
-(use-package! nyan-mode
-  :after doom-modeline
-  :config
-  (nyan-mode)
-  (nyan-start-animation))
+(after! doom-modeline
+  (progn
+    (nyan-mode)
+    (nyan-start-animation))
+  (progn
+    (parrot-mode)
+    (parrot-set-parrot-type 'emacs)
+    (parrot-start-animation)))
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
@@ -209,7 +212,8 @@
           (lambda (arg) (call-interactively #'dap-hydra)))
 
 (map! :leader "od" nil
-      :leader "od" #'dap-debug)
+      :leader "od" #'dap-debug
+      :leader "dt" #'dap-breakpoint-toggle)
 
 (setq dired-dwim-target t)
 

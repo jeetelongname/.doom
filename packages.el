@@ -33,6 +33,7 @@
 (unpin! doom-themes)
 
 (package! nyan-mode)
+(package! parrot)
 
 (package! keycast :pin "038475c178...")
 

@@ -157,16 +157,20 @@ know)
 (package! horizon-theme)
 (unpin! doom-themes)
 #+end_src
-** Nyan
+** modeline fun
 #+begin_src emacs-lisp :tangle packages.el
 (package! nyan-mode)
+(package! parrot)
 #+end_src
 #+begin_src emacs-lisp
-(use-package! nyan-mode
-  :after doom-modeline
-  :config
-  (nyan-mode)
-  (nyan-start-animation))
+(after! doom-modeline
+  (progn
+    (nyan-mode)
+    (nyan-start-animation))
+  (progn
+    (parrot-mode)
+    (parrot-set-parrot-type 'emacs)
+    (parrot-start-animation)))
 #+end_src
 
 * Modules
@@ -367,8 +371,8 @@ I have stolen this from @tecosaur again..
 #+end_src
 #+begin_src emacs-lisp
 (map! :leader "od" nil
-      :leader "od" #'dap-debug)
-
+      :leader "od" #'dap-debug
+      :leader "dt" #'dap-breakpoint-toggle)
 #+end_src
 ** emacs
 *** dired
