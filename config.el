@@ -259,14 +259,13 @@
         ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
-(after! go-mode
-  (set-ligatures! 'go-mode
+(after! go-mode (set-ligatures! 'go-mode
     :def "func"
     :true "true" :false "false"
     :int "int" :str "string"
     :float "float" :bool "bool"
     :for "for"
-    :return "return" :yeild "yeild"))
+    :return "return" ))
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)

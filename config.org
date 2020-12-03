@@ -448,15 +448,13 @@ I have stolen this from @tecosaur again..
 *** Go
 #+BEGIN_SRC emacs-lisp
 
-(after! go-mode
-  (set-ligatures! 'go-mode
+(after! go-mode (set-ligatures! 'go-mode
     :def "func"
     :true "true" :false "false"
     :int "int" :str "string"
     :float "float" :bool "bool"
     :for "for"
-    :return "return" :yeild "yeild"))
-
+    :return "return" ))
 #+END_SRC
 *** Python
 #+BEGIN_SRC emacs-lisp
