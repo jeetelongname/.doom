@@ -60,13 +60,13 @@
   (atomic-chrome-start-server))
 
 (after! doom-modeline
-  (progn
-    (nyan-mode)
-    (nyan-start-animation))
-  (progn
-    (parrot-mode)
-    (parrot-set-parrot-type 'emacs)
-    (parrot-start-animation)))
+  (nyan-mode)
+  (nyan-start-animation)
+  (parrot-mode)
+  ;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
+  ;; (parrot-set-parrot-type (nth (random (length birds)) birds))
+  (parrot-set-parrot-type 'rotating)
+  (parrot-start-animation))
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
