@@ -122,6 +122,9 @@
 
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 
+(defun yeet/text () ; I will insert this into the dashboard TODO
+  (insert "your dumb"))
+
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
         doom-modeline-height 3

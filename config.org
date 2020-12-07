@@ -113,7 +113,7 @@ know)
 (package! evil-tutor)
 #+END_SRC
 ** EAF
-
+https://github.com/MatthewZMD/.emacs.d#orgad36696
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! eaf :recipe
   (:host github
@@ -257,6 +257,16 @@ this will load up 2 diffrent themes one for the terminal and one for the gui
 #+BEGIN_SRC emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 #+END_SRC
+
+
+#+begin_src emacs-lisp
+(defun yeet/text () ; I will insert this into the dashboard TODO
+  (insert "your dumb"))
+#+end_src
+
+#+RESULTS:
+: yeet/text
+
 *** Modeline
 #+BEGIN_SRC emacs-lisp
 (after! doom-modeline
