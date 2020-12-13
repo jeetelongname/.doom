@@ -1,5 +1,6 @@
 #+TITLE: My configuration
 #+STARTUP: content
+
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
 mostly stolen snippets for others.
@@ -378,11 +379,14 @@ I have stolen this from @tecosaur again..
 *** Popup
 this is my default pop up rule, all my popups are beaten into submission
 #+BEGIN_SRC emacs-lisp
-(set-popup-rule! ".+"
-  :side 'right
-  :width 90
-  :actions '+popup-display-buffer-stacked-side-window-fn
-  :quit t)
+;; (set-popup-rule! ".+"
+;;   :side 'right
+;;   :width 90
+;;   :actions '+popup-display-buffer-stacked-side-window-fn
+;;   :quit t)
+;; (set-popup-rule! "COMMIT_EDITMSG"
+;;   :side 'top
+;;   :height 20)
 #+END_SRC
 
 *** Tabs

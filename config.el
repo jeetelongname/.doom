@@ -182,11 +182,14 @@
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 
-(set-popup-rule! ".+"
-  :side 'right
-  :width 90
-  :actions '+popup-display-buffer-stacked-side-window-fn
-  :quit t)
+;; (set-popup-rule! ".+"
+;;   :side 'right
+;;   :width 90
+;;   :actions '+popup-display-buffer-stacked-side-window-fn
+;;   :quit t)
+;; (set-popup-rule! "COMMIT_EDITMSG"
+;;   :side 'top
+;;   :height 20)
 
 (when (featurep! :ui tabs)
 (after! centaur-tabs
