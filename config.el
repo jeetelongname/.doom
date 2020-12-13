@@ -33,8 +33,7 @@
 (use-package! discord-emacs ;; for face value discord intergration
   :config
   ;; (discord-emacs-run "747913611426529440") ;;mine
-  (discord-emacs-run "384815451978334208") ;;default
-  )
+  (discord-emacs-run "384815451978334208")) ;;default
 
 (use-package! eaf
   :config
@@ -67,6 +66,12 @@
   ;; (parrot-set-parrot-type (nth (random (length birds)) birds))
   (parrot-set-parrot-type 'rotating)
   (parrot-start-animation))
+
+(use-package! vimrc-mode)
+
+(use-package! carbon-now-sh
+  :config
+  (map! :n "g C-c" #'carbon-now-sh))
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
@@ -168,21 +173,11 @@
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 
-;; (set-popup-rule!
-;;   :side 'right
-;;   :action '+popup-display-buffer-stacked-side-window-fn
-;;   )
-(plist-put! +popup-defaults :actions '+popup-display-buffer-stacked-side-window-fn)
-;; ;; `set-popup-rule!'
-;; (plist-put! +popup-defaults :side 'right)
-(setq +popup-defaults
-      (list :side   'right
-            :height 0.16
-            :width  40
-            :quit   t
-            :select #'ignore
-            :actions '+popup-display-buffer-stacked-side-window-fn
-            :ttl    5))
+(set-popup-rule! ".+"
+  :side 'right
+  :width 90
+  :actions '+popup-display-buffer-stacked-side-window-fn
+  :quit t)
 
 (when (featurep! :ui tabs)
 (after! centaur-tabs
@@ -276,7 +271,13 @@
 (setq +latex-viewers '(pdf-tools))
 
 (map! :map cdlatex-mode-map
-    :i "TAB" #'cdlatex-tab)
+      :i "TAB" #'cdlatex-tab)
+
+;; (use-package! auctex-latexmk ;; I wanted to use latexmk but not have to intergrate it
+;;   :after latex
+;;   :config
+;;   (auctex-latexmk-setup)
+;;   (setq auctex-latexmk-inherit-TeX-PDF-mode t))
 
 (setq +mu4e-backend 'mbsync)
 (after! mu4e
