@@ -1,6 +1,5 @@
 #+TITLE: My configuration
 #+STARTUP: content
-
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
 mostly stolen snippets for others.
@@ -21,7 +20,8 @@ This is the stuff that does not really belong in any module but is useful
       display-line-numbers-type 'relative
       browse-url-browser-function 'browse-url-firefox)
 #+END_SRC
-if a file has changed on disk I dont want that old file sticking around
+if a file has changed on disk I dont want that old file sticking around. that
+can mess me up
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode t)
 #+END_SRC
@@ -33,12 +33,14 @@ Frankly I don't know why this is not default
       evil-vsplit-window-right t)
 #+END_SRC
 
-I like a little padding
+I like a little seperation so i put an empty line at the top of my emacs
+instance (I may put something in it later)
 #+BEGIN_SRC emacs-lisp
 (setq-default header-line-format
         (concat (propertize " " 'display '((space :align-to 0)))
                 " "))
 #+END_SRC
+spawn emacs somewhat in the center of my screen
 #+BEGIN_SRC emacs-lisp
 (let ((width  500)
       (height 250)
@@ -96,6 +98,7 @@ know)
 (package! peep-dired)
 #+END_SRC
 ** FIXME tldr
+it takes forever to actually load
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! tldr)
 #+END_SRC
@@ -104,15 +107,26 @@ know)
 (package! org-msg)
 #+END_SRC
 ** selectric-mode
+I want to annoy people with a loud keyboard without having to carry around a
+loud keyboard
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! selectric-mode)
 #+END_SRC
 ** Evil tutor
+I wanted to see the differences with its vim counterparts
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
 ** EAF
-https://github.com/MatthewZMD/.emacs.d#orgad36696
+eaf is a n application framework for writing pyqt applications in emacs. Its
+really cool!
+https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revist
+You need a few dependencys for this to work
+#+begin_src shell :tangle nil
+pip3 install PyQt5 PyQt5-sip PyQ5WebEngine python-dbus 
+#+end_src
+
+
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! eaf :recipe
   (:host github
@@ -138,7 +152,8 @@ https://github.com/MatthewZMD/.emacs.d#orgad36696
 #+begin_src emacs-lisp :tangle packages.el
 (package! atomic-chrome)
 #+end_src
-
+When writing a lot of markdown on github this helps (now all I need to do is get the
+button on a keybind in my browser)
 #+begin_src emacs-lisp
 (use-package! atomic-chrome
   :after-call focus-out-hook
@@ -151,12 +166,14 @@ https://github.com/MatthewZMD/.emacs.d#orgad36696
 
   (atomic-chrome-start-server))
 #+end_src
-** Themes
+** themes
+this was for a terminal  experiment that did not work
 #+begin_src emacs-lisp :tangle packages.el
 (package! horizon-theme)
 (unpin! doom-themes)
 #+end_src
 ** modeline fun
+/whats life without a little colour?/
 #+begin_src emacs-lisp :tangle packages.el
 (package! nyan-mode)
 (package! parrot)
@@ -175,31 +192,49 @@ https://github.com/MatthewZMD/.emacs.d#orgad36696
 
 #+RESULTS:
 : t
-** Vim
+** vim
 because sacrilege is fun
+(this is mostly a mental exercise but it does work...)
 #+begin_src emacs-lisp :tangle packages.el
 (package! vimrc-mode)
 #+end_src
 #+begin_src emacs-lisp
-(use-package! vimrc-mode)
+(use-package! vimrc-mode
+  :mode "\\.vim\\'"
+  :config
+  (sp-with-modes 'vimrc-mode
+    (sp-local-pair "\"" :action nil)))
 #+end_src
 ** pretty code shots
+I missed the ability to make pretty code shots inside vscode now its come back to
+me through this package. its pretty cool and works well (it only does one thing)
 #+begin_src emacs-lisp :tangle packages.el
 (package! carbon-now-sh)
 #+end_src
+
+I wanted to work with these code images direcly in emacs so I brought in eaf to
+help. EAF segfaults when opening carbon (I don't know why) so this does not
+work. But if you use a diffrent browser (such as emacs webkit) then just replace
+the browser function and you are off to the races
 #+begin_src emacs-lisp
-(use-package! carbon-now-sh
+(use-package! carbon-now-sh ;; works but eaf segfaults when opening carbon
   :config
+  (defun yeet/carbon-use-eaf ()
+    (interactive)
+    (let ((browse-url-browser-function 'eaf-open-browser))
+      (browse-url (concat carbon-now-sh-baseurl "?code="
+                          (url-hexify-string (carbon-now-sh--region))))))
   (map! :n "g C-c" #'carbon-now-sh))
 #+end_src
+
 * Modules
 ** completion
 *** company
 #+BEGIN_SRC emacs-lisp
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
-        company-minimum-prefix-length 2)
-  (setq company-show-numbers t))
+        company-minimum-prefix-length 2
+        company-show-numbers t))
 #+END_SRC
 this is to make prescient a little more intelligent
 #+BEGIN_SRC emacs-lisp
@@ -340,7 +375,7 @@ I have stolen this from @tecosaur again..
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
 #+END_SRC
-*** Popup 
+*** Popup
 this is my default pop up rule, all my popups are beaten into submission
 #+BEGIN_SRC emacs-lisp
 (set-popup-rule! ".+"
@@ -396,6 +431,8 @@ this is my default pop up rule, all my popups are beaten into submission
 #+end_src
 ** emacs
 *** dired
+If I open 2 instances of dired in two different locations then move one. dired
+will point the move to the other location
 #+begin_src emacs-lisp
 (setq dired-dwim-target t)
 #+end_src

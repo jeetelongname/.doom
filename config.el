@@ -67,16 +67,25 @@
   (parrot-set-parrot-type 'rotating)
   (parrot-start-animation))
 
-(use-package! vimrc-mode)
-
-(use-package! carbon-now-sh
+(use-package! vimrc-mode
+  :mode "\\.vim\\'"
   :config
+  (sp-with-modes 'vimrc-mode
+    (sp-local-pair "\"" :action nil)))
+
+(use-package! carbon-now-sh ;; works but eaf segfaults when opening carbon
+  :config
+  (defun yeet/carbon-use-eaf ()
+    (interactive)
+    (let ((browse-url-browser-function 'eaf-open-browser))
+      (browse-url (concat carbon-now-sh-baseurl "?code="
+                          (url-hexify-string (carbon-now-sh--region))))))
   (map! :n "g C-c" #'carbon-now-sh))
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
-        company-minimum-prefix-length 2)
-  (setq company-show-numbers t))
+        company-minimum-prefix-length 2
+        company-show-numbers t))
 
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
