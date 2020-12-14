@@ -1,5 +1,34 @@
 #+TITLE: My configuration
 #+STARTUP: content
+* Table of contense :TOC:
+- [[#introduction][Introduction]]
+- [[#rudimentary-configuration][Rudimentary configuration]]
+- [[#packages][Packages]]
+  - [[#emacs-easy-hugo][emacs easy hugo]]
+  - [[#discord-emacs][Discord emacs]]
+  - [[#peep-dired][peep-dired]]
+  - [[#fixme-tldr][FIXME tldr]]
+  - [[#org-msg][org-msg]]
+  - [[#selectric-mode][selectric-mode]]
+  - [[#evil-tutor][Evil tutor]]
+  - [[#eaf][EAF]]
+  - [[#atomic-chrome][atomic chrome]]
+  - [[#themes][themes]]
+  - [[#modeline-fun][modeline fun]]
+  - [[#vim][vim]]
+  - [[#pretty-code-shots][pretty code shots]]
+- [[#modules][Modules]]
+  - [[#completion][completion]]
+  - [[#ui][ui]]
+  - [[#tools][tools]]
+  - [[#emacs][emacs]]
+  - [[#lang][lang]]
+  - [[#email][email]]
+  - [[#app][App]]
+- [[#other-stuff][Other Stuff??]]
+  - [[#keybinds][Keybinds]]
+  - [[#hooky-hooks][Hooky hooks]]
+  - [[#funky-functions][funky functions]]
 
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
