@@ -152,8 +152,9 @@ eaf is a n application framework for writing pyqt applications in emacs. Its
 really cool!
 https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revist
 You need a few dependencys for this to work
-#+begin_src shell :tangle nil
-pip3 install PyQt5 PyQt5-sip PyQ5WebEngine python-dbus 
+
+#+begin_src shell :tangle /dev/null
+sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
 #+end_src
 
 
@@ -168,6 +169,7 @@ pip3 install PyQt5 PyQt5-sip PyQ5WebEngine python-dbus
 #+BEGIN_SRC emacs-lisp
 (use-package! eaf
   :config
+  ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
   (eaf-setq eaf-browser-dark-mode "false")
   (setq eaf-browser-default-search-engine "duckduckgo")
   (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
@@ -254,7 +256,7 @@ the browser function and you are off to the races
     (let ((browse-url-browser-function 'eaf-open-browser))
       (browse-url (concat carbon-now-sh-baseurl "?code="
                           (url-hexify-string (carbon-now-sh--region))))))
-  (map! :n "g C-c" #'carbon-now-sh))
+  (map! :n "g C-c" #'yeet/carbon-use-eaf))
 #+end_src
 
 * Modules

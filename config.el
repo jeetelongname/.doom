@@ -37,6 +37,7 @@
 
 (use-package! eaf
   :config
+  ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
   (eaf-setq eaf-browser-dark-mode "false")
   (setq eaf-browser-default-search-engine "duckduckgo")
   (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
@@ -80,7 +81,7 @@
     (let ((browse-url-browser-function 'eaf-open-browser))
       (browse-url (concat carbon-now-sh-baseurl "?code="
                           (url-hexify-string (carbon-now-sh--region))))))
-  (map! :n "g C-c" #'carbon-now-sh))
+  (map! :n "g C-c" #'yeet/carbon-use-eaf))
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
