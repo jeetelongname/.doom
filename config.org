@@ -1,6 +1,6 @@
 #+TITLE: My configuration
 #+STARTUP: content
-* Table of contense :TOC:
+* Table of contains :TOC:
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
 - [[#packages][Packages]]
@@ -17,6 +17,8 @@
   - [[#modeline-fun][modeline fun]]
   - [[#vim][vim]]
   - [[#pretty-code-shots][pretty code shots]]
+  - [[#keycast][keycast]]
+  - [[#games][Games]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
   - [[#ui][ui]]
@@ -101,7 +103,10 @@ This is mostly just for the time stamp but it does come in handy
 
 #+BEGIN_SRC emacs-lisp
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
-(setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
+(use-package! emacs-easy-hugo
+  :after markdown
+  :config
+  (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 #+END_SRC
 ** TODO Discord emacs
 I use discord emacs over elcord .. well because I found it first this is pretty
@@ -153,7 +158,7 @@ really cool!
 https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revist
 You need a few dependencys for this to work
 
-#+begin_src shell :tangle /dev/null
+#+begin_src shell :tangle nil
 sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
 #+end_src
 
@@ -168,6 +173,7 @@ sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
 
 #+BEGIN_SRC emacs-lisp
 (use-package! eaf
+  :defer t
   :config
   ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
   (eaf-setq eaf-browser-dark-mode "false")
@@ -245,20 +251,62 @@ me through this package. its pretty cool and works well (it only does one thing)
 #+end_src
 
 I wanted to work with these code images direcly in emacs so I brought in eaf to
-help. EAF segfaults when opening carbon (I don't know why) so this does not
-work. But if you use a diffrent browser (such as emacs webkit) then just replace
-the browser function and you are off to the races
+help. Do note that there is a bug in the pypi version of the qtwebengine that
+basically segfaults if you open carbon (and probably other sites) if you install
+from the repos tho this problem goes away
 #+begin_src emacs-lisp
-(use-package! carbon-now-sh ;; works but eaf segfaults when opening carbon
+(use-package! carbon-now-sh
   :config
   (defun yeet/carbon-use-eaf ()
     (interactive)
+    (split-window-right)
     (let ((browse-url-browser-function 'eaf-open-browser))
       (browse-url (concat carbon-now-sh-baseurl "?code="
                           (url-hexify-string (carbon-now-sh--region))))))
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 #+end_src
 
+** keycast
+I have stolen this from @tecosaur again..
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! keycast :pin "038475c178...")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+;; (map! :leader
+;;       :desc "t k" #'keycast-mode)
+#+END_SRC
+** Games
+I want to make a module full of fun games and additins to eastr eggs. its there
+to document what exists and just add a little more fun to the operating system
+we call home
+Some games I will probably add
+ - https://web.archive.org/web/20070708044037/http://cedet.sourceforge.net/ftp/hangman.el-0.1.gz
+ - https://www.emacswiki.org/emacs/CategoryGames
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! emacs-2048
+;;   :recipe (:host github
+;;            :repo "sprang/emacs-2048"))
+
+#+end_src
 * Modules
 ** completion
 *** company
@@ -379,34 +427,6 @@ I stole this from @tecosaur Its frankly a great addition (this is a theme throug
 
 #+END_SRC
 
-**** Packages
-I have stolen this from @tecosaur again..
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! keycast :pin "038475c178...")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package! keycast
-  :commands keycast-mode
-  :config
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
-  (custom-set-faces!
-    '(keycast-command :inherit doom-modeline-debug
-                      :height 0.9)
-    '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold)))
-;; (map! :leader
-;;       :desc "t k" #'keycast-mode)
-#+END_SRC
 *** Popup
 this is my default pop up rule, all my popups are beaten into submission
 #+BEGIN_SRC emacs-lisp
@@ -856,10 +876,12 @@ These are my general keybinds (should probably split them up)
 #+END_SRC
 
 ** Hooky hooks
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
-#+END_SRC
+;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
+;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
@@ -893,8 +915,11 @@ These are my general keybinds (should probably split them up)
 #+BEGIN_SRC emacs-lisp
 (defun henlo ()
   "henlo."
-  (interactive)(message "\"henlo\""))
+  (interactive)
+  (message "\"henlo\""))
+(henlo)
 #+END_SRC
+
 
 #+begin_src emacs-lisp
 (defun stop ()
