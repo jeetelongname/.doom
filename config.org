@@ -1,14 +1,13 @@
 #+TITLE: My configuration
 #+STARTUP: content
-* Table of contains :TOC:
+* Table of Contents :TOC_3:
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
 - [[#packages][Packages]]
   - [[#emacs-easy-hugo][emacs easy hugo]]
   - [[#discord-emacs][Discord emacs]]
   - [[#peep-dired][peep-dired]]
-  - [[#fixme-tldr][FIXME tldr]]
-  - [[#org-msg][org-msg]]
+  - [[#tldr][tldr]]
   - [[#selectric-mode][selectric-mode]]
   - [[#evil-tutor][Evil tutor]]
   - [[#eaf][EAF]]
@@ -19,14 +18,32 @@
   - [[#pretty-code-shots][pretty code shots]]
   - [[#keycast][keycast]]
   - [[#games][Games]]
+  - [[#dired-drag-and-drop][dired drag and drop]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
+    - [[#company][company]]
+    - [[#ivy][ivy]]
   - [[#ui][ui]]
+    - [[#doom][Doom]]
+    - [[#doom-dashboard][Doom Dashboard]]
+    - [[#modeline][Modeline]]
+    - [[#popup][Popup]]
+    - [[#tabs][Tabs]]
+    - [[#treemacs][Treemacs]]
   - [[#tools][tools]]
+    - [[#debugger][debugger]]
   - [[#emacs][emacs]]
+    - [[#dired][dired]]
   - [[#lang][lang]]
+    - [[#org][Org]]
+    - [[#go][Go]]
+    - [[#python][Python]]
+    - [[#latex][\LaTeX]]
   - [[#email][email]]
+    - [[#mu4e][mu4e]]
   - [[#app][App]]
+    - [[#irc][irc]]
+    - [[#rss][rss]]
 - [[#other-stuff][Other Stuff??]]
   - [[#keybinds][Keybinds]]
   - [[#hooky-hooks][Hooky hooks]]
@@ -132,15 +149,19 @@ know)
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! peep-dired)
 #+END_SRC
-** FIXME tldr
-it takes forever to actually load
+** tldr
+Ever wanted to not read a man page? me too. tldr is a good middle ground between
+a lot of useless information and .. no information. Now in emacs!
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! tldr)
 #+END_SRC
-** org-msg
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! org-msg)
-#+END_SRC
+
+#+begin_src emacs-lisp
+(use-package! tldr
+  :defer t
+  :config
+  (setq tldr-enabled-categories '("common" "linux")))
+#+end_src
 ** selectric-mode
 I want to annoy people with a loud keyboard without having to carry around a
 loud keyboard
@@ -269,7 +290,7 @@ from the repos tho this problem goes away
 ** keycast
 I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! keycast :pin "038475c178...")
+(package! keycast)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -306,6 +327,22 @@ Some games I will probably add
 ;;   :recipe (:host github
 ;;            :repo "sprang/emacs-2048"))
 
+#+end_src
+** dired drag and drop
+I want drag and drop so I just wrapped dragon in elisp the drag commands work
+wellish and ,The drop commands don't work at all
+#+begin_src emacs-lisp :tangle packages.el
+(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+#+end_src
+#+begin_src emacs-lisp
+(use-package! dired-dragon
+  :after dired
+  :config
+  (map! :map dired-mode-map
+        (:prefix "C-d"
+         :n "d" #'dired-dragon
+         :n "s" #'dired-dragon-stay
+         :n "i" #'dired-dragon-individual)))
 #+end_src
 * Modules
 ** completion
@@ -599,6 +636,8 @@ turns out doom has support for latexmk already
 
 ** email
 *** mu4e
+there is a lot of stuff in here. good news! a lot of it is going to get mergeed
+into doom soon! so it will be evaculating my config
 #+BEGIN_SRC emacs-lisp
 (setq +mu4e-backend 'mbsync)
 (after! mu4e
@@ -832,6 +871,17 @@ I want my mail to update on startup
  (org-msg-mode))
 #+END_SRC
 ** App
+*** irc
+#+begin_src emacs-lisp
+(after! circe
+  (set-irc-server! "chat.freenode.net"
+                   '(:tls t
+                     :port 6697
+                     :nick "yeetaditya"
+                     :sasl-username ,"yeetadita"
+                     :sasl-password (+pass-get-secret "social/freenode")
+                     :channels ("#emacs"))))
+#+end_src
 *** rss
 #+BEGIN_SRC emacs-lisp
 (after! elfeed
@@ -857,22 +907,22 @@ I needed elfeed to look a little nicer. so I got elfeed goodies which did the jo
 These are my general keybinds (should probably split them up)
 #+BEGIN_SRC emacs-lisp
 (map!
- :n "z C-w" 'save-buffer ; = :w ZZ = :wq handy
+ :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
  :leader
-  :desc "Enable Coloured Values""t c" #'rainbow-mode
-  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
-  :desc "Open Elfeed""o l" #'elfeed
+ :desc "Enable Coloured Values""t c" #'rainbow-mode
+ :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
+ :desc "Open Elfeed""o l" #'elfeed
 
-  (:after dired (:map dired-mode-map
-        :n "j" #'peep-dired-next-file
-        :n "k" #'peep-dired-prev-file
-        :localleader
-        "p" #'peep-dired))
+ (:after dired (:map dired-mode-map
+                :n "j" #'peep-dired-next-file
+                :n "k" #'peep-dired-prev-file
+                :localleader
+                "p" #'peep-dired))
 
-  (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
-        :n [return]
-        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
-             #'+spell/correct))))
+ (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
+                   :n [return]
+                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+                          #'+spell/correct))))
 #+END_SRC
 
 ** Hooky hooks
@@ -889,6 +939,8 @@ These are my general keybinds (should probably split them up)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 #+END_SRC
 ** funky functions
+Because this is a literate config I can't re evaluate the buffer using
+~eval-buffer~ (bound to =SPC m e b=) so I reload the file
 #+BEGIN_SRC emacs-lisp
 (defun yeet/reload ()
   "A simple cmd to make reloading m config easier"
@@ -899,6 +951,10 @@ These are my general keybinds (should probably split them up)
 (map! :leader
       "h r c" #'yeet/reload)
 #+END_SRC
+
+This was the begining of a paint intergration so that I could draw in notes. I
+could not find a program featureful yet commandline enough to get it working but
+one day
 #+BEGIN_SRC emacs-lisp
 (defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
   "where to put the picture")
@@ -920,11 +976,41 @@ These are my general keybinds (should probably split them up)
 (henlo)
 #+END_SRC
 
-
+I don't have a problem ok I can =M-x stop= at any time
 #+begin_src emacs-lisp
 (defun stop ()
   (interactive)
   (defvar name "*I can quit at any time*")
   (switch-to-buffer (get-buffer-create name))
   (insert "I can stop at any time\nI am in control"))
+#+end_src
+
+
+This snippet toggles between a vertical and horizontal window. Like most things
+I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWindowSplit][here]]
+#+begin_src emacs-lisp
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
 #+end_src

@@ -38,6 +38,11 @@
   ;; (discord-emacs-run "747913611426529440") ;;mine
   (discord-emacs-run "384815451978334208")) ;;default
 
+(use-package! tldr
+  :defer t
+  :config
+  (setq tldr-enabled-categories '("common" "linux")))
+
 (use-package! eaf
   :defer t
   :config
@@ -108,6 +113,15 @@
                   :weight bold)))
 ;; (map! :leader
 ;;       :desc "t k" #'keycast-mode)
+
+(use-package! dired-dragon
+  :after dired
+  :config
+  (map! :map dired-mode-map
+        (:prefix "C-d"
+         :n "d" #'dired-dragon
+         :n "s" #'dired-dragon-stay
+         :n "i" #'dired-dragon-individual)))
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
@@ -504,6 +518,15 @@ clicked."
  #+end_signature")
  (org-msg-mode))
 
+(after! circe
+  (set-irc-server! "chat.freenode.net"
+                   '(:tls t
+                     :port 6697
+                     :nick "yeetaditya"
+                     :sasl-username ,"yeetadita"
+                     :sasl-password (+pass-get-secret "social/freenode")
+                     :channels ("#emacs"))))
+
 (after! elfeed
   (setq elfeed-search-filter "@1-week-ago")
   (setq rmh-elfeed-org-files (list (concat org-directory "elfeed.org"))) ;; +org
@@ -514,22 +537,22 @@ clicked."
 ;;   (elfeed-goodies/setup))
 
 (map!
- :n "z C-w" 'save-buffer ; = :w ZZ = :wq handy
+ :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
  :leader
-  :desc "Enable Coloured Values""t c" #'rainbow-mode
-  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
-  :desc "Open Elfeed""o l" #'elfeed
+ :desc "Enable Coloured Values""t c" #'rainbow-mode
+ :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
+ :desc "Open Elfeed""o l" #'elfeed
 
-  (:after dired (:map dired-mode-map
-        :n "j" #'peep-dired-next-file
-        :n "k" #'peep-dired-prev-file
-        :localleader
-        "p" #'peep-dired))
+ (:after dired (:map dired-mode-map
+                :n "j" #'peep-dired-next-file
+                :n "k" #'peep-dired-prev-file
+                :localleader
+                "p" #'peep-dired))
 
-  (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
-        :n [return]
-        (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
-             #'+spell/correct))))
+ (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
+                   :n [return]
+                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+                          #'+spell/correct))))
 
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
@@ -572,3 +595,28 @@ clicked."
   (defvar name "*I can quit at any time*")
   (switch-to-buffer (get-buffer-create name))
   (insert "I can stop at any time\nI am in control"))
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
