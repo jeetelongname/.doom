@@ -4,13 +4,13 @@
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
 - [[#packages][Packages]]
-  - [[#emacs-easy-hugo][emacs easy hugo]]
-  - [[#discord-emacs][Discord emacs]]
-  - [[#peep-dired][peep-dired]]
-  - [[#tldr][tldr]]
+  - [[#hugo-support][Hugo support]]
+  - [[#discord-rich-presence][discord rich presence]]
+  - [[#dired-previews][dired previews]]
+  - [[#tldr-integration][tldr integration]]
   - [[#selectric-mode][selectric-mode]]
   - [[#evil-tutor][Evil tutor]]
-  - [[#eaf][EAF]]
+  - [[#emacs-application-framework][emacs application framework]]
   - [[#atomic-chrome][atomic chrome]]
   - [[#themes][themes]]
   - [[#modeline-fun][modeline fun]]
@@ -27,8 +27,8 @@
     - [[#doom][Doom]]
     - [[#doom-dashboard][Doom Dashboard]]
     - [[#modeline][Modeline]]
-    - [[#popup][Popup]]
-    - [[#tabs][Tabs]]
+    - [[#fixme-popup][FIXME Popup]]
+    - [[#deprecated-tabs][DEPRECATED Tabs]]
     - [[#treemacs][Treemacs]]
   - [[#tools][tools]]
     - [[#debugger][debugger]]
@@ -38,7 +38,7 @@
     - [[#org][Org]]
     - [[#go][Go]]
     - [[#python][Python]]
-    - [[#latex][\LaTeX]]
+    - [[#latex][LaTeX]]
   - [[#email][email]]
     - [[#mu4e][mu4e]]
   - [[#app][App]]
@@ -51,7 +51,7 @@
 
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
-mostly stolen snippets for others.
+mostly stolen snippets from others.
 
 Lets get this config started!
 #+BEGIN_SRC emacs-lisp
@@ -82,7 +82,7 @@ Frankly I don't know why this is not default
       evil-vsplit-window-right t)
 #+END_SRC
 
-I like a little seperation so i put an empty line at the top of my emacs
+I like a little separation so I put an empty line at the top of my emacs
 instance (I may put something in it later)
 #+BEGIN_SRC emacs-lisp
 (setq-default header-line-format
@@ -102,14 +102,14 @@ spawn emacs somewhat in the center of my screen
             `(height text-pixels ,height)))
 #+END_SRC
 * Packages
-This is mostly stuff pertaining to my ~packages.el~ file and subsequent
-configuration
+I have quite a few packages that I use. These are the packages and there
+subsequent configurations
 A nice little header
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
-** emacs easy hugo
+** Hugo support
 This is mostly just for the time stamp but it does come in handy
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! emacs-easy-hugo
@@ -125,7 +125,7 @@ This is mostly just for the time stamp but it does come in handy
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 #+END_SRC
-** TODO Discord emacs
+** discord rich presence
 I use discord emacs over elcord .. well because I found it first this is pretty
 much all that is needed for it to work and you can use the default client id to
 get it working right away or if you want to roll your own .you can add assets by
@@ -145,12 +145,14 @@ know)
   ;; (discord-emacs-run "747913611426529440") ;;mine
   (discord-emacs-run "384815451978334208")) ;;default
 #+END_SRC
-** peep-dired
+** TODO dired previews
+this is meant to give me a preview of the file in dired (or a peep). but I have
+not set it up
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! peep-dired)
 #+END_SRC
-** tldr
-Ever wanted to not read a man page? me too. tldr is a good middle ground between
+** tldr integration
+Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
 a lot of useless information and .. no information. Now in emacs!
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! tldr)
@@ -173,16 +175,16 @@ I wanted to see the differences with its vim counterparts
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! evil-tutor)
 #+END_SRC
-** EAF
-eaf is a n application framework for writing pyqt applications in emacs. Its
+** emacs application framework
+eaf is an application framework for writing pyqt applications in emacs. Its
 really cool!
-https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revist
-You need a few dependencys for this to work
+https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revisit
+You need a few dependencies for this to work. I don't recommend installing from
+pip as it can be buggy
 
-#+begin_src shell :tangle nil
+#+begin_src shell :tangle no
 sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
 #+end_src
-
 
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! eaf :recipe
@@ -197,11 +199,11 @@ sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
   :defer t
   :config
   ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-  (eaf-setq eaf-browser-dark-mode "false")
+  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
   (setq eaf-browser-default-search-engine "duckduckgo")
   (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
 
-(use-package! eaf-evil ;; FIXME
+(use-package! eaf-evil ;; evil bindings in my browser
   :after eaf
   :config
   (setq eaf-evil-leader-keymap doom-leader-map)
@@ -239,21 +241,31 @@ this was for a terminal  experiment that did not work
 #+end_src
 
 #+begin_src emacs-lisp
+(use-package! nyan-mode
+  :defer t
+  :config
+  (setq nyan-bar-length 20
+        nyan-wavy-trail t))
+
+(use-package! parrot
+  :defer t
+  :config
+  (parrot-set-parrot-type 'rotating))
+;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
+;; (parrot-set-parrot-type (nth (random (length birds)) birds)))
+
+
 (after! doom-modeline
   (nyan-mode)
   (nyan-start-animation)
   (parrot-mode)
-  ;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
-  ;; (parrot-set-parrot-type (nth (random (length birds)) birds))
-  (parrot-set-parrot-type 'rotating)
   (parrot-start-animation))
 #+end_src
 
-#+RESULTS:
-: t
 ** vim
 because sacrilege is fun
-(this is mostly a mental exercise but it does work...)
+(this is mostly a mental exercise but it does work...) I can (alleged) also get lsp
+support as well so this may be a fun project to take on
 #+begin_src emacs-lisp :tangle packages.el
 (package! vimrc-mode)
 #+end_src
@@ -271,7 +283,7 @@ me through this package. its pretty cool and works well (it only does one thing)
 (package! carbon-now-sh)
 #+end_src
 
-I wanted to work with these code images direcly in emacs so I brought in eaf to
+I wanted to work with these code images directly in emacs so I brought in eaf to
 help. Do note that there is a bug in the pypi version of the qtwebengine that
 basically segfaults if you open carbon (and probably other sites) if you install
 from the repos tho this problem goes away
@@ -292,7 +304,8 @@ I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! keycast)
 #+END_SRC
-
+it adds prettier keycast mode support and more stuff that I don't understand. I
+also bound it
 #+BEGIN_SRC emacs-lisp
 (use-package! keycast
   :commands keycast-mode
@@ -311,9 +324,8 @@ I have stolen this from @tecosaur again..
                       :height 0.9)
     '(keycast-key :inherit custom-modified
                   :height 1.1
-                  :weight bold)))
-;; (map! :leader
-;;       :desc "t k" #'keycast-mode)
+                  :weight bold))
+  (map! :leader "tk" #'keycast-mode))
 #+END_SRC
 ** Games
 I want to make a module full of fun games and additins to eastr eggs. its there
@@ -417,8 +429,7 @@ this will load up 2 diffrent themes one for the terminal and one for the gui
 #+end_src
 *** Doom Dashboard
 #+BEGIN_SRC emacs-lisp
-(setq +doom-dashboard-name "«doom»")
-
+(setq +doom-dashboard-name "*doom*")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -437,18 +448,18 @@ this will load up 2 diffrent themes one for the terminal and one for the gui
 *** Modeline
 #+BEGIN_SRC emacs-lisp
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
-        doom-modeline-height 3
+  (setq doom-modeline-buffer-file-name-style 'auto
+        doom-modeline-height 30
         doom-modeline-icon 't
         doom-modeline-modal-icon 'nil
         doom-modeline-env-version t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
-        doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+        doom-modeline-continuous-word-count-modes 'text-mode
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
-        doom-modeline-persp-icon t))
+        doom-modeline-persp-icon nil))
 #+END_SRC
 
 I stole this from @tecosaur Its frankly a great addition (this is a theme throughout @tecosaurs config)
@@ -464,7 +475,7 @@ I stole this from @tecosaur Its frankly a great addition (this is a theme throug
 
 #+END_SRC
 
-*** Popup
+*** FIXME Popup
 this is my default pop up rule, all my popups are beaten into submission
 #+BEGIN_SRC emacs-lisp
 ;; (set-popup-rule! ".+"
@@ -477,16 +488,17 @@ this is my default pop up rule, all my popups are beaten into submission
 ;;   :height 20)
 #+END_SRC
 
-*** Tabs
+*** DEPRECATED Tabs
+I don't use tabs so a lot of this is not really maintained...
 #+BEGIN_SRC emacs-lisp
 (when (featurep! :ui tabs)
-(after! centaur-tabs
-   (setq centaur-tabs-style "box"
-     centaur-tabs-height 32
-     centaur-tabs-set-bar 'under
-     x-underline-at-descent-line t
-     centaur-tabs-close-button "×"
-     centaur-tabs-modified-marker "Ø")))
+  (after! centaur-tabs
+    (setq centaur-tabs-style "box"
+          centaur-tabs-height 32
+          centaur-tabs-set-bar 'under
+          x-underline-at-descent-line t
+          centaur-tabs-close-button "×"
+          centaur-tabs-modified-marker "Ø")))
 ;; (use-package! centaur-tabs
 ;;  :config
 ;;  (centaur-tabs-headline-match)
@@ -499,15 +511,22 @@ this is my default pop up rule, all my popups are beaten into submission
 ;;  )
 #+END_SRC
 *** Treemacs
+this provides a vscode like sidebar. I acutally use dired a lot more but I guess
+its still useful for presentataions
 #+BEGIN_SRC emacs-lisp
-(setq +treemacs-git-mode 'extended
-      treemacs-width 30)
+(after! treemacs
+  (setq +treemacs-git-mode 'extended
+        treemacs-width 25))
 #+END_SRC
 ** tools
-*** debugger
+*** TODO debugger
+dap support in doom is meh so I a have added a little more. tbh I don't really
+use a debugger (tho I should) its a little broken and go support seems to be
+out so I will have to fix that eventually
 #+begin_src emacs-lisp
-(setq dap-auto-configure-features '(sessions locals controls tooltip)
-      dap-python-executable "python3")
+(after! dap-mode
+  (setq dap-auto-configure-features '(sessions locals controls tooltip)
+        dap-python-executable "python3"))
 #+end_src
 #+begin_src emacs-lisp
 ;; (add-hook! 'python-mode-hook #'(require 'dap-python))
@@ -530,7 +549,9 @@ will point the move to the other location
 #+end_src
 
 ** lang
-*** Org
+*** TODO Org
+Org mode. our favorite plain text markup format! I had some nice fortifications
+going on but they broke when I switched to ~custom-set-faces!~ (my fault)
 #+BEGIN_SRC emacs-lisp
 (after! org
   (setq org-directory "~/org-notes/"
@@ -594,9 +615,11 @@ will point the move to the other location
              :files ("css" "dist" "js" "plugin"))
     :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
 #+END_SRC
-*** Go
-#+BEGIN_SRC emacs-lisp
+*** TODO Go
+Go lsp is a little broken. I am not sure if its the client, server or the
+debugger but its something
 
+#+BEGIN_SRC emacs-lisp
 (after! go-mode (set-ligatures! 'go-mode
     :def "func"
     :true "true" :false "false"
@@ -606,14 +629,13 @@ will point the move to the other location
     :return "return" ))
 #+END_SRC
 *** Python
+Python is great is it not 🐍
 #+BEGIN_SRC emacs-lisp
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)
 #+END_SRC
 
-#+RESULTS:
-
-*** \LaTeX
+*** LaTeX
 turns out doom has support for latexmk already
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! auctex-latexmk)
@@ -845,6 +867,7 @@ I want my mail to update on startup
 (add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
 #+END_SRC
 
+I use msmtp to send my mail as its a little faster and has room for expansion
 #+begin_src emacs-lisp
 (setq sendmail-program (executable-find "msmtp")
       send-mail-function #'smtpmail-send-it
@@ -872,6 +895,7 @@ I want my mail to update on startup
 #+END_SRC
 ** App
 *** irc
+I have a beard and I do like wasting time...
 #+begin_src emacs-lisp
 (after! circe
   (set-irc-server! "chat.freenode.net"
@@ -883,6 +907,7 @@ I want my mail to update on startup
                      :channels ("#emacs"))))
 #+end_src
 *** rss
+I have not used it in months but i will probably revise it some point
 #+BEGIN_SRC emacs-lisp
 (after! elfeed
   (setq elfeed-search-filter "@1-week-ago")

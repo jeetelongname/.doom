@@ -47,11 +47,11 @@
   :defer t
   :config
   ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-  (eaf-setq eaf-browser-dark-mode "false")
+  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
   (setq eaf-browser-default-search-engine "duckduckgo")
   (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
 
-(use-package! eaf-evil ;; FIXME
+(use-package! eaf-evil ;; evil bindings in my browser
   :after eaf
   :config
   (setq eaf-evil-leader-keymap doom-leader-map)
@@ -68,13 +68,24 @@
 
   (atomic-chrome-start-server))
 
+(use-package! nyan-mode
+  :defer t
+  :config
+  (setq nyan-bar-length 20
+        nyan-wavy-trail t))
+
+(use-package! parrot
+  :defer t
+  :config
+  (parrot-set-parrot-type 'rotating))
+;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
+;; (parrot-set-parrot-type (nth (random (length birds)) birds)))
+
+
 (after! doom-modeline
   (nyan-mode)
   (nyan-start-animation)
   (parrot-mode)
-  ;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
-  ;; (parrot-set-parrot-type (nth (random (length birds)) birds))
-  (parrot-set-parrot-type 'rotating)
   (parrot-start-animation))
 
 (use-package! vimrc-mode
@@ -110,9 +121,8 @@
                       :height 0.9)
     '(keycast-key :inherit custom-modified
                   :height 1.1
-                  :weight bold)))
-;; (map! :leader
-;;       :desc "t k" #'keycast-mode)
+                  :weight bold))
+  (map! :leader "tk" #'keycast-mode))
 
 (use-package! dired-dragon
   :after dired
@@ -173,7 +183,7 @@
 (setq doom-theme 'doom-horizon)
 ;;(setq doom-theme 'doom-horizon-light-theme)
 
-(setq +doom-dashboard-name "«doom»")
+(setq +doom-dashboard-name "*doom*")
 
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 
@@ -181,18 +191,18 @@
   (insert "your dumb"))
 
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-upto-root
-        doom-modeline-height 3
+  (setq doom-modeline-buffer-file-name-style 'auto
+        doom-modeline-height 30
         doom-modeline-icon 't
         doom-modeline-modal-icon 'nil
         doom-modeline-env-version t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
-        doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
+        doom-modeline-continuous-word-count-modes 'text-mode
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
-        doom-modeline-persp-icon t))
+        doom-modeline-persp-icon nil))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -212,13 +222,13 @@
 ;;   :height 20)
 
 (when (featurep! :ui tabs)
-(after! centaur-tabs
-   (setq centaur-tabs-style "box"
-     centaur-tabs-height 32
-     centaur-tabs-set-bar 'under
-     x-underline-at-descent-line t
-     centaur-tabs-close-button "×"
-     centaur-tabs-modified-marker "Ø")))
+  (after! centaur-tabs
+    (setq centaur-tabs-style "box"
+          centaur-tabs-height 32
+          centaur-tabs-set-bar 'under
+          x-underline-at-descent-line t
+          centaur-tabs-close-button "×"
+          centaur-tabs-modified-marker "Ø")))
 ;; (use-package! centaur-tabs
 ;;  :config
 ;;  (centaur-tabs-headline-match)
@@ -230,11 +240,13 @@
 ;;        centaur-tabs-modified-marker "Ø")
 ;;  )
 
-(setq +treemacs-git-mode 'extended
-      treemacs-width 30)
+(after! treemacs
+  (setq +treemacs-git-mode 'extended
+        treemacs-width 25))
 
-(setq dap-auto-configure-features '(sessions locals controls tooltip)
-      dap-python-executable "python3")
+(after! dap-mode
+  (setq dap-auto-configure-features '(sessions locals controls tooltip)
+        dap-python-executable "python3"))
 
 ;; (add-hook! 'python-mode-hook #'(require 'dap-python))
 
