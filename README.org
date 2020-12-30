@@ -3,7 +3,7 @@
 
 * this is my config of [[https://github.com/hlissner/doom-emacs][doom emacs]]
 I have written quite a bit of stuff in here so there may be stuff to take. have
-a look see!.
+a [[file:config.org][look see!]]
 * Installation
 
 #+BEGIN_SRC shell
