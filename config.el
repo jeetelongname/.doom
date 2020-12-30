@@ -199,7 +199,7 @@
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
-        doom-modeline-continuous-word-count-modes 'text-mode
+        doom-modeline-continuous-word-count-modes '(text-mode)
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
         doom-modeline-persp-icon nil))

@@ -16,7 +16,7 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy
-        -fuzzy
+        ;; -fuzzy
         +prescient)        ; a search engine for love and life
 
        :ui
@@ -37,8 +37,8 @@
        ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
 
-       (ligatures          ; ligatures and symbols to make your code pretty again
-        +extra)
+       ;;(ligatures +extra); ligatures and symbols to make your code pretty again
+
        ;; tabs                ; a tab bar for Emacs
        treemacs            ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
@@ -152,7 +152,7 @@
         +dragndrop
         +pandoc
         +present
-        +pretty
+        ;; -pretty
         +noter)            ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more

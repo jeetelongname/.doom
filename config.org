@@ -1,6 +1,15 @@
 #+TITLE: My configuration
 #+STARTUP: content
-* Table of Contents :TOC_3:
+* Introduction
+This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
+mostly stolen snippets from others.
+
+Lets get this config started!
+#+BEGIN_SRC emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+END_SRC
+
+** Table of Contents :TOC_3:
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
 - [[#packages][Packages]]
@@ -19,6 +28,8 @@
   - [[#keycast][keycast]]
   - [[#games][Games]]
   - [[#dired-drag-and-drop][dired drag and drop]]
+  - [[#org-super-agenda][org super agenda]]
+  - [[#elfeed-goodies][elfeed-goodies]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -49,15 +60,6 @@
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
 - [[#epilogue][Epilogue]]
-
-* Introduction
-This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
-mostly stolen snippets from others.
-
-Lets get this config started!
-#+BEGIN_SRC emacs-lisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-#+END_SRC
 
 * Rudimentary configuration
 This is the stuff that does not really belong in any module but is useful
@@ -357,6 +359,18 @@ wellish and ,The drop commands don't work at all
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
 #+end_src
+** org super agenda
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! origami)
+;; (package! org-super-agenda)
+#+END_SRC
+
+** elfeed-goodies
+I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! elfeed-goodies)
+(package! elfeed-web)
+#+END_SRC
 * Modules
 ** completion
 *** company
@@ -457,7 +471,7 @@ this will load up 2 diffrent themes one for the terminal and one for the gui
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
-        doom-modeline-continuous-word-count-modes 'text-mode
+        doom-modeline-continuous-word-count-modes '(text-mode)
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
         doom-modeline-persp-icon nil))
@@ -600,22 +614,6 @@ going on but they broke when I switched to ~custom-set-faces!~ (my fault)
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 
-**** Packages
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! org-pretty-tags)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! origami)
-;; (package! org-super-agenda)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-  (package! revealjs
-    :recipe (:host github :repo "hakimel/reveal.js"
-             :files ("css" "dist" "js" "plugin"))
-    :pin "faa8b56e2ae430b0ab4fd71610155e5316b06149")
-#+END_SRC
 *** TODO Go
 Go lsp is a little broken. I am not sure if its the client, server or the
 debugger but its something
@@ -922,12 +920,6 @@ I have not used it in months but i will probably revise it some point
 ;;   (elfeed-goodies/setup))
 #+END_SRC
 
-**** Packages
-I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-goodies)
-(package! elfeed-web)
-#+END_SRC
 * Other Stuff??
 ** Keybinds
 These are my general keybinds (should probably split them up)
