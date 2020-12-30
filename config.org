@@ -48,6 +48,7 @@
   - [[#keybinds][Keybinds]]
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
+- [[#epilogue][Epilogue]]
 
 * Introduction
 This is my literate configuration for doom emacs. I barley know [[https://learnxinyminutes.com/docs/elisp/][elisp]]  and I have
@@ -1039,3 +1040,9 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 #+end_src
+
+
+* Epilogue
+And that was my config! I hope you liked it! If you did not then you can make an
+[[https://github.com/jeetelongname/.doom/issues][issue]] and if you just want to say I suck then i guess you can use that for that
+too. I guess this is it for me... I am going back to bed
