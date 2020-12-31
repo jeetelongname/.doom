@@ -80,11 +80,11 @@
        :checkers
        (syntax +childframe) ; tasing you for every semicolon you forget
        (spell  +aspell)     ; tasing you for misspelling mispelling
-       grammar           ; tasing grammar mistake every you make
+       grammar              ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
-       (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
+       ;; (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
        editorconfig        ; let someone else argue about tabs vs spaces
