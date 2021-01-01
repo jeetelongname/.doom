@@ -56,3 +56,5 @@
 (package! dired-sidebar)
 
 (package! ibuffer-sidebar)
+
+(package! snow)
