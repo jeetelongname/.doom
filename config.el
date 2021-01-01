@@ -27,6 +27,91 @@
             `(width text-pixels ,width)
             `(height text-pixels ,height)))
 
+(map!
+ :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
+ :leader
+ :desc "Enable Coloured Values""t c" #'rainbow-mode
+ :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
+ :desc "Open Elfeed""o l" #'elfeed
+
+ (:after dired (:map dired-mode-map
+                :n "j" #'peep-dired-next-file
+                :n "k" #'peep-dired-prev-file
+                :localleader
+                "p" #'peep-dired))
+
+ (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
+                   :n [return]
+                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+                          #'+spell/correct))))
+
+(add-hook! 'rainbow-mode-hook
+  (hl-line-mode (if rainbow-mode -1 +1)))
+;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
+;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
+
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+
+(defun yeet/reload ()
+  "A simple cmd to make reloading m config easier"
+  (interactive)
+  (load! "config" doom-private-dir)
+  (message "Reloaded!"))
+
+(map! :leader
+      "h r c" #'yeet/reload)
+
+(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
+  "where to put the picture")
+(defvar yeet/paint-ask t
+  "Ask if you want to name the file if no it will be named you current buffer + picture")
+(defvar yeet/paint-cmd "gnome-paint"
+  "the program you want to use as your paint program")
+
+(defun yeet/paint-insert()
+  ""
+  (interactive)
+  (shell-command yeet/paint-cmd))
+
+(defun henlo ()
+  "henlo."
+  (interactive)
+  (message "\"henlo\""))
+(henlo)
+
+(defun stop ()
+  (interactive)
+  (defvar name "*I can quit at any time*")
+  (switch-to-buffer (get-buffer-create name))
+  (insert "I can stop at any time\nI am in control"))
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (use-package! emacs-easy-hugo
   :after markdown
@@ -143,23 +228,17 @@
   :defer t)
 
 (after! company
-  (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
-        company-minimum-prefix-length 2
+  (setq company-idle-delay 0.7 ; I like my autocomplete like my tea fast not oftern but still there
+        ;; company-minimum-prefix-length 2
         company-show-numbers t))
-
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)
 
 (after! ivy
   (setq ivy-height 20
         ivy-wrap nil
         ivy-magic-slash-non-match-action t))
 
-;; (after! ivy-postframe
-;;   (setq ivy-posframe-border-width 20
-;;         ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
-;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
-;; (ivy-posframe-display-at-frame-top-center))
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
 
 (setq! doom-font
       (font-spec :family "Inconsolata NF" :size 15)
@@ -221,7 +300,7 @@
 
 (add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
-(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" ))
+(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" :weight bold ))
 
 ;; (set-popup-rule! ".+"
 ;;   :side 'right
@@ -273,7 +352,7 @@
 (after! org
   (setq org-directory "~/org-notes/"
         org-agenda-files (list org-directory))
-  (when (featurep! :lang org +pretty)
+  (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 
@@ -308,12 +387,6 @@
 
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
-
-;; (use-package! auctex-latexmk ;; I wanted to use latexmk but not have to intergrate it
-;;   :after latex
-;;   :config
-;;   (auctex-latexmk-setup)
-;;   (setq auctex-latexmk-inherit-TeX-PDF-mode t))
 
 (setq +mu4e-backend 'mbsync)
 (after! mu4e
@@ -539,88 +612,3 @@ clicked."
 ;; (use-package! elfeed-goodies
 ;;   :config
 ;;   (elfeed-goodies/setup))
-
-(map!
- :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
- :leader
- :desc "Enable Coloured Values""t c" #'rainbow-mode
- :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed
-
- (:after dired (:map dired-mode-map
-                :n "j" #'peep-dired-next-file
-                :n "k" #'peep-dired-prev-file
-                :localleader
-                "p" #'peep-dired))
-
- (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
-                   :n [return]
-                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
-                          #'+spell/correct))))
-
-(add-hook! 'rainbow-mode-hook
-  (hl-line-mode (if rainbow-mode -1 +1)))
-;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
-;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
-
-(remove-hook 'text-mode-hook #'visual-line-mode)
-(add-hook 'text-mode-hook #'auto-fill-mode)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-
-(defun yeet/reload ()
-  "A simple cmd to make reloading m config easier"
-  (interactive)
-  (load! "config" doom-private-dir)
-  (message "Reloaded!"))
-
-(map! :leader
-      "h r c" #'yeet/reload)
-
-(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
-  "where to put the picture")
-(defvar yeet/paint-ask t
-  "Ask if you want to name the file if no it will be named you current buffer + picture")
-(defvar yeet/paint-cmd "gnome-paint"
-  "the program you want to use as your paint program")
-
-(defun yeet/paint-insert()
-  ""
-  (interactive)
-  (shell-command yeet/paint-cmd))
-
-(defun henlo ()
-  "henlo."
-  (interactive)
-  (message "\"henlo\""))
-(henlo)
-
-(defun stop ()
-  (interactive)
-  (defvar name "*I can quit at any time*")
-  (switch-to-buffer (get-buffer-create name))
-  (insert "I can stop at any time\nI am in control"))
-
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))

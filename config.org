@@ -14,6 +14,9 @@ Lets get this config started!
 ** Table of Contents :TOC_3:
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
+  - [[#keybinds][Keybinds]]
+  - [[#hooky-hooks][Hooky hooks]]
+  - [[#funky-functions][funky functions]]
 - [[#packages][Packages]]
   - [[#hugo-support][Hugo support]]
   - [[#discord-rich-presence][discord rich presence]]
@@ -61,10 +64,6 @@ Lets get this config started!
   - [[#app][App]]
     - [[#irc][irc]]
     - [[#rss][rss]]
-- [[#other-stuff][Other Stuff??]]
-  - [[#keybinds][Keybinds]]
-  - [[#hooky-hooks][Hooky hooks]]
-  - [[#funky-functions][funky functions]]
 - [[#epilogue][Epilogue]]
 
 * Rudimentary configuration
@@ -110,6 +109,121 @@ spawn emacs somewhat in the center of my screen
             `(width text-pixels ,width)
             `(height text-pixels ,height)))
 #+END_SRC
+
+** Keybinds
+These are my general keybinds they should not belong to any module. thus they
+get stuck here
+#+BEGIN_SRC emacs-lisp
+(map!
+ :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
+ :leader
+ :desc "Enable Coloured Values""t c" #'rainbow-mode
+ :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
+ :desc "Open Elfeed""o l" #'elfeed
+
+ (:after dired (:map dired-mode-map
+                :n "j" #'peep-dired-next-file
+                :n "k" #'peep-dired-prev-file
+                :localleader
+                "p" #'peep-dired))
+
+ (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
+                   :n [return]
+                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
+                          #'+spell/correct))))
+#+END_SRC
+
+** Hooky hooks
+#+begin_src emacs-lisp
+(add-hook! 'rainbow-mode-hook
+  (hl-line-mode (if rainbow-mode -1 +1)))
+;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
+;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+#+END_SRC
+** funky functions
+Because this is a literate config I can't re evaluate the buffer using
+~eval-buffer~ (bound to =SPC m e b=) so I reload the file
+(=m e b= becomes =h r c=)
+#+BEGIN_SRC emacs-lisp
+(defun yeet/reload ()
+  "A simple cmd to make reloading m config easier"
+  (interactive)
+  (load! "config" doom-private-dir)
+  (message "Reloaded!"))
+
+(map! :leader
+      "h r c" #'yeet/reload)
+#+END_SRC
+
+This was the begining of a paint intergration so that I could draw-in notes. I
+could not find a program featurefull yet commandline enough to get it working, but
+one day
+#+BEGIN_SRC emacs-lisp
+(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
+  "where to put the picture")
+(defvar yeet/paint-ask t
+  "Ask if you want to name the file if no it will be named you current buffer + picture")
+(defvar yeet/paint-cmd "gnome-paint"
+  "the program you want to use as your paint program")
+
+(defun yeet/paint-insert()
+  ""
+  (interactive)
+  (shell-command yeet/paint-cmd))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defun henlo ()
+  "henlo."
+  (interactive)
+  (message "\"henlo\""))
+(henlo)
+#+END_SRC
+
+I don't have a problem ok I can =M-x stop= at any time
+#+begin_src emacs-lisp
+(defun stop ()
+  (interactive)
+  (defvar name "*I can quit at any time*")
+  (switch-to-buffer (get-buffer-create name))
+  (insert "I can stop at any time\nI am in control"))
+#+end_src
+
+
+This snippet toggles between a vertical and horizontal window. Like most things
+I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWindowSplit][here]]
+#+begin_src emacs-lisp
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
+#+end_src
+
 * Packages
 I have quite a few packages that I use. These are the packages and there
 subsequent configurations
@@ -418,18 +532,15 @@ dired sidebar.. for Ibuffer
 #+end_src
 
 * Modules
+These are the configurations for the doom specific modules. some are big like
+mu4e, some are small like dired. some are well sized. They are all loved tho!
 ** completion
 *** company
 #+BEGIN_SRC emacs-lisp
 (after! company
-  (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
-        company-minimum-prefix-length 2
+  (setq company-idle-delay 0.7 ; I like my autocomplete like my tea fast not oftern but still there
+        ;; company-minimum-prefix-length 2
         company-show-numbers t))
-#+END_SRC
-this is to make prescient a little more intelligent
-#+BEGIN_SRC emacs-lisp
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)
 #+END_SRC
 *** ivy
 #+BEGIN_SRC emacs-lisp
@@ -439,12 +550,10 @@ this is to make prescient a little more intelligent
         ivy-magic-slash-non-match-action t))
 #+END_SRC
 
+this is to make prescient a little more intelligent
 #+BEGIN_SRC emacs-lisp
-;; (after! ivy-postframe
-;;   (setq ivy-posframe-border-width 20
-;;         ivy-posframe-parameters '((left-fringe . 8)(right-fringe . 8))
-;;         ivy-posframe-height-alist '((swiper . 20)(t . 40)))
-;; (ivy-posframe-display-at-frame-top-center))
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
 #+END_SRC
 
 ** ui
@@ -523,7 +632,10 @@ this will load up 2 diffrent themes one for the terminal and one for the gui
         doom-modeline-persp-icon nil))
 #+END_SRC
 
-I stole this from @tecosaur Its frankly a great addition (this is a theme throughout @tecosaurs config)
+I stole this from @tecosaur Its frankly a great addition (this is a theme
+throughout @tecosaurs config)
+As we expect that the encoding is UTF-8 we remove it from the modeline untill we
+get something that is not normal
 #+BEGIN_SRC emacs-lisp
 
 (defun doom-modeline-conditional-buffer-encoding ()
@@ -536,8 +648,9 @@ I stole this from @tecosaur Its frankly a great addition (this is a theme throug
 
 #+END_SRC
 
+the persp name was too dark for my liking
 #+begin_src emacs-lisp
-(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" ))
+(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" :weight bold ))
 #+end_src
 *** FIXME Popup
 this is my default pop up rule, all my popups are beaten into submission
@@ -614,13 +727,13 @@ will point the move to the other location
 
 ** lang
 *** TODO Org
-Org mode. our favorite plain text markup format! I had some nice fortifications
-going on but they broke when I switched to ~custom-set-faces!~ (my fault)
+Org mode. our favorite plain text markup format! these are my configurations for
+it
 #+BEGIN_SRC emacs-lisp
 (after! org
   (setq org-directory "~/org-notes/"
         org-agenda-files (list org-directory))
-  (when (featurep! :lang org +pretty)
+  (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 #+end_src
@@ -654,8 +767,7 @@ but there are worst things
 
 *** TODO Go
 Go lsp is a little broken. I am not sure if its the client, server or the
-debugger but its something
-
+debugger but its something. Its not the debugger
 #+BEGIN_SRC emacs-lisp
 (after! go-mode (set-ligatures! 'go-mode
     :def "func"
@@ -674,23 +786,12 @@ Python is great is it not 🐍
 
 *** LaTeX
 turns out doom has support for latexmk already
-#+begin_src emacs-lisp :tangle packages.el
-;; (package! auctex-latexmk)
-#+end_src
-
 #+BEGIN_SRC emacs-lisp
-
 (setq +latex-viewers '(pdf-tools))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
-
-;; (use-package! auctex-latexmk ;; I wanted to use latexmk but not have to intergrate it
-;;   :after latex
-;;   :config
-;;   (auctex-latexmk-setup)
-;;   (setq auctex-latexmk-inherit-TeX-PDF-mode t))
 #+END_SRC
 
 ** email
@@ -957,121 +1058,6 @@ I have not used it in months but i will probably revise it some point
 ;;   :config
 ;;   (elfeed-goodies/setup))
 #+END_SRC
-
-* Other Stuff??
-** Keybinds
-These are my general keybinds they should not belong to any module. thus they
-get stuck here
-#+BEGIN_SRC emacs-lisp
-(map!
- :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
- :leader
- :desc "Enable Coloured Values""t c" #'rainbow-mode
- :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
- :desc "Open Elfeed""o l" #'elfeed
-
- (:after dired (:map dired-mode-map
-                :n "j" #'peep-dired-next-file
-                :n "k" #'peep-dired-prev-file
-                :localleader
-                "p" #'peep-dired))
-
- (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
-                   :n [return]
-                   (cmds! (memq 'spell-fu-incorrect-face (face-at-point nil t))
-                          #'+spell/correct))))
-#+END_SRC
-
-** Hooky hooks
-#+begin_src emacs-lisp
-(add-hook! 'rainbow-mode-hook
-  (hl-line-mode (if rainbow-mode -1 +1)))
-;; this snippet can be replaced with `(after! magit (setq magit-save-repository-buffers t))'
-;; (after! magit (add-hook! 'magit-status-mode-hook :append (call-interactively #'save-some-buffers)))
-#+end_src
-
-#+BEGIN_SRC emacs-lisp
-(remove-hook 'text-mode-hook #'visual-line-mode)
-(add-hook 'text-mode-hook #'auto-fill-mode)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-#+END_SRC
-** funky functions
-Because this is a literate config I can't re evaluate the buffer using
-~eval-buffer~ (bound to =SPC m e b=) so I reload the file
-(=m e b= becomes =h r c=)
-#+BEGIN_SRC emacs-lisp
-(defun yeet/reload ()
-  "A simple cmd to make reloading m config easier"
-  (interactive)
-  (load! "config" doom-private-dir)
-  (message "Reloaded!"))
-
-(map! :leader
-      "h r c" #'yeet/reload)
-#+END_SRC
-
-This was the begining of a paint intergration so that I could draw-in notes. I
-could not find a program featurefull yet commandline enough to get it working, but
-one day
-#+BEGIN_SRC emacs-lisp
-(defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
-  "where to put the picture")
-(defvar yeet/paint-ask t
-  "Ask if you want to name the file if no it will be named you current buffer + picture")
-(defvar yeet/paint-cmd "gnome-paint"
-  "the program you want to use as your paint program")
-
-(defun yeet/paint-insert()
-  ""
-  (interactive)
-  (shell-command yeet/paint-cmd))
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-(defun henlo ()
-  "henlo."
-  (interactive)
-  (message "\"henlo\""))
-(henlo)
-#+END_SRC
-
-I don't have a problem ok I can =M-x stop= at any time
-#+begin_src emacs-lisp
-(defun stop ()
-  (interactive)
-  (defvar name "*I can quit at any time*")
-  (switch-to-buffer (get-buffer-create name))
-  (insert "I can stop at any time\nI am in control"))
-#+end_src
-
-
-This snippet toggles between a vertical and horizontal window. Like most things
-I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWindowSplit][here]]
-#+begin_src emacs-lisp
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
-#+end_src
 
 * Epilogue
 And that was my config! I hope you liked it! If you did not then you can make an
