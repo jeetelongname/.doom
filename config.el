@@ -136,7 +136,11 @@
 (use-package! org-sidebar
   :after org)
 
-(use-package dired-sidebar)
+(use-package dired-sidebar
+  :defer t)
+
+(use-package! ibuffer-sidebar
+  :defer t)
 
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always

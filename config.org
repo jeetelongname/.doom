@@ -32,8 +32,10 @@ Lets get this config started!
   - [[#dired-drag-and-drop][dired drag and drop]]
   - [[#org-super-agenda][org super agenda]]
   - [[#elfeed-goodies][elfeed-goodies]]
-  - [[#org-sidebar][Org Sidebar]]
-  - [[#dired-sidebar][Dired sidebar]]
+  - [[#sidebars][Sidebars]]
+    - [[#org-sidebar][Org Sidebar]]
+    - [[#dired-sidebar][Dired sidebar]]
+    - [[#ibuffer-sidebar][Ibuffer sidebar]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -306,7 +308,7 @@ from the repos tho this problem goes away
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 #+end_src
 
-** keycast
+** TODO keycast
 I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! keycast)
@@ -375,10 +377,13 @@ I needed elfeed to look a little nicer. so I got elfeed goodies which did the jo
 (package! elfeed-goodies)
 (package! elfeed-web)
 #+END_SRC
-** Org Sidebar
-#+begin_src
+** TODO Sidebars
+By vertue of these things I seem to have 3 different sidebars (4 if you include
+treemacs) that I have taken a liking to so they get there own sub genre
 
-#+end_src
+*** Org Sidebar
+this does a bunch of org stuff like break stuff down into headings. there is a
+bit of work to be done
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-sidebar)
 #+end_src
@@ -387,13 +392,29 @@ I needed elfeed to look a little nicer. so I got elfeed goodies which did the jo
 (use-package! org-sidebar
   :after org)
 #+end_src
-** Dired sidebar
+
+*** Dired sidebar
+this is a replacement for treemacs. Now don't get me wrong. I like treemacs. Its
+great but its /not dired/ this preserves a lot of the dired configuration I
+could do and more importantly preserves keys which is nice
 #+begin_src emacs-lisp :tangle packages.el
 (package! dired-sidebar)
 #+end_src
+#+begin_src emacs-lisp
+(use-package dired-sidebar
+  :defer t)
+#+end_src
+
+*** Ibuffer sidebar
+this is the same thing as above made by the same [[https://github.com/jojojames][author]] and it works just like
+dired sidebar.. for Ibuffer
+#+begin_src emacs-lisp :tangle packages.el
+(package! ibuffer-sidebar)
+#+end_src
 
 #+begin_src emacs-lisp
-(use-package dired-sidebar)
+(use-package! ibuffer-sidebar
+  :defer t)
 #+end_src
 
 * Modules
@@ -939,7 +960,8 @@ I have not used it in months but i will probably revise it some point
 
 * Other Stuff??
 ** Keybinds
-These are my general keybinds (should probably split them up)
+These are my general keybinds they should not belong to any module. thus they
+get stuck here
 #+BEGIN_SRC emacs-lisp
 (map!
  :n "z C-w" 'save-buffer ; I can use this onehanded which is nice when I need to leave or eat or something
@@ -976,6 +998,7 @@ These are my general keybinds (should probably split them up)
 ** funky functions
 Because this is a literate config I can't re evaluate the buffer using
 ~eval-buffer~ (bound to =SPC m e b=) so I reload the file
+(=m e b= becomes =h r c=)
 #+BEGIN_SRC emacs-lisp
 (defun yeet/reload ()
   "A simple cmd to make reloading m config easier"
@@ -987,8 +1010,8 @@ Because this is a literate config I can't re evaluate the buffer using
       "h r c" #'yeet/reload)
 #+END_SRC
 
-This was the begining of a paint intergration so that I could draw in notes. I
-could not find a program featureful yet commandline enough to get it working but
+This was the begining of a paint intergration so that I could draw-in notes. I
+could not find a program featurefull yet commandline enough to get it working, but
 one day
 #+BEGIN_SRC emacs-lisp
 (defvar yeet/paint-insert-prefix-dir (concat org-directory "pictures")
@@ -1049,7 +1072,6 @@ I did not write this I took it from [[https://www.emacswiki.org/emacs/ToggleWind
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 #+end_src
-
 
 * Epilogue
 And that was my config! I hope you liked it! If you did not then you can make an

@@ -55,4 +55,6 @@
 
 (package! dired-sidebar)
 
+(package! ibuffer-sidebar)
+
 ;; (package! auctex-latexmk)
