@@ -51,4 +51,8 @@
 (package! elfeed-goodies)
 (package! elfeed-web)
 
+(package! org-sidebar)
+
+(package! dired-sidebar)
+
 ;; (package! auctex-latexmk)

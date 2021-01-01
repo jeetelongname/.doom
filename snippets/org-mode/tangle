@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: tangle
 # uuid: 
-# key: <st
+# key:<st
 # condition: t
 # --
 #+begin_src $1 tangle: $2

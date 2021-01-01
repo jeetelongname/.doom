@@ -133,6 +133,11 @@
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
 
+(use-package! org-sidebar
+  :after org)
+
+(use-package dired-sidebar)
+
 (after! company
   (setq company-idle-delay 0.3 ; I like my autocomplete like my tea fast and always
         company-minimum-prefix-length 2
@@ -212,6 +217,8 @@
 
 (add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
+(custom-set-faces! '(doom-modeline-persp-name :foreground "#e95678" ))
+
 ;; (set-popup-rule! ".+"
 ;;   :side 'right
 ;;   :width 90
@@ -262,37 +269,18 @@
 (after! org
   (setq org-directory "~/org-notes/"
         org-agenda-files (list org-directory))
-  ;; (custom-set-faces! '(org-date nil
-  ;;   :foreground "#5b6268"
-  ;;   :background nil))
-  ;; (custom-set-faces! '(org-level-1 nil
-  ;;   :background nil
-  ;;   :height 1.2
-  ;;   :weight 'normal))
-  ;; (custom-set-faces! '(org-level-2 nil
-  ;;   :background nil
-  ;;   :height 1.0
-  ;;   :weight 'normal))
-  ;; (custom-set-faces! '(org-level-3 nil
-  ;;   :background nil
-  ;;   :height 1.0
-  ;;   :weight 'normal))
-  ;; (custom-set-faces! '(org-level-4 nil
-  ;;   :background nil
-  ;;   :height 1.0
-  ;;   :weight 'normal))
-  ;; (custom-set-faces! '(org-level-5 nil
-  ;;   :weight 'normal))
-  ;; (custom-set-faces! '(org-level-6 nil
-  ;;   :weight 'normal))
-  ;; (custom-set-faces! '(org-document-title nil
-  ;;   :background nil
-  ;;   :height 1.75
-  ;;   :weight 'bold))
-(when (featurep! :lang org +pretty )
-  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
-        org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜")))
-)
+  (when (featurep! :lang org +pretty)
+    (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
+          org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
+
+(custom-set-faces! '(org-date :foreground "#5b6268"))
+(custom-set-faces! '(org-document-title :height 1.75 :weight bold))
+(custom-set-faces! '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal))
+(custom-set-faces! '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal))
+(custom-set-faces! '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal))
+(custom-set-faces! '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal))
+(custom-set-faces! '(org-level-5 :foreground "#9093ae":weight normal))
+(custom-set-faces! '(org-level-6 :foreground "#90dfe0":weight normal))
 
 (after! org-capture
     (setq org-capture-templates
