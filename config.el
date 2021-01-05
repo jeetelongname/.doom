@@ -34,11 +34,6 @@
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
  :desc "Open Elfeed""o l" #'elfeed
 
- (:after dired (:map dired-mode-map
-                :n "j" #'peep-dired-next-file
-                :n "k" #'peep-dired-prev-file
-                :localleader
-                "p" #'peep-dired))
 
  (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
                    :n [return]
@@ -123,9 +118,20 @@
   ;; (discord-emacs-run "747913611426529440") ;;mine
   (discord-emacs-run "384815451978334208")) ;;default
 
-(use-package! tldr
+(use-package! peep-dired
+  ;; :after dired
   :defer t
   :config
+  (setq peep-dired-cleanup-on-disable t)
+  (map! (:after dired (:map dired-mode-map
+                       :n "j" #'peep-dired-next-file
+                       :n "k" #'peep-dired-prev-file
+                       :localleader
+                       "p" #'peep-dired))))
+
+(use-package! tldr
+  :config
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
   (setq tldr-enabled-categories '("common" "linux")))
 
 (use-package! eaf
@@ -239,48 +245,36 @@
 (after! ivy
   (setq ivy-height 20
         ivy-wrap nil
-        ivy-magic-slash-non-match-action t))
+        ivy-magic-slash-non-match-action t)
+  (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
 
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)
+(setq-default history-length 10000)
+(setq-default prescient-history-length 10000)
 
 (setq! doom-font
-      (font-spec :family "Inconsolata NF" :size 15)
-      doom-big-font
-      (font-spec :family "Inconsolata NF" :size 25)
-      doom-variable-pitch-font
-      (font-spec :family "Inconsolata NF" :size 15))
-
-;;(setq! doom-font
-;;      (font-spec :family "Inconsolata" :size 15)
-;;      doom-big-font
-;;      (font-spec :family "Inconsolata" :size 25)
-;;      doom-variable-pitch-font
-;;      (font-spec :family "Inconsolata" :size 15))
-
-;; (setq! doom-font
-;;       (font-spec :family "Comic Mono" :size 15)
-;;       doom-big-font
-;;       (font-spec :family "Comic Mono" :size 25))
+       (font-spec :family "Inconsolata NF" :size 15)
+       doom-big-font
+       (font-spec :family "Inconsolata NF" :size 25))
+;; doom-variable-pitch-font
+;; (font-spec :family "Inconsolata NF" :size 15))
 
 (after! doom-themes
   (setq! doom-themes-enable-bold t
-        doom-themes-enable-italic t
-        doom-horizon-brighter-comments t))
+         doom-themes-enable-italic t
+         doom-horizon-brighter-comments t))
+
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
-(when (not(display-graphic-p)) (setq doom-theme 'horizon))
-(setq doom-theme 'doom-horizon)
-;;(setq doom-theme 'doom-horizon-light-theme)
-
-(setq +doom-dashboard-name "*doom*")
+(if (not(display-graphic-p))
+    (setq doom-theme 'horizon)
+  (setq doom-theme 'doom-horizon))
 
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 
-(defun yeet/text () ; I will insert this into the dashboard TODO
-  (insert "your dumb"))
+(add-hook! '+doom-dashboard-functions :append
+  (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'auto
@@ -288,13 +282,13 @@
         doom-modeline-icon 't
         doom-modeline-modal-icon 'nil
         doom-modeline-env-version t
-        doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
         doom-modeline-continuous-word-count-modes '(text-mode)
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
-        doom-modeline-persp-icon nil))
+        doom-modeline-persp-icon t
+        doom-modeline-github t))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -323,16 +317,6 @@
           x-underline-at-descent-line t
           centaur-tabs-close-button "×"
           centaur-tabs-modified-marker "Ø")))
-;; (use-package! centaur-tabs
-;;  :config
-;;  (centaur-tabs-headline-match)
-;;  (setq centaur-tabs-style "box"
-;;        centaur-tabs-height 32
-;;        centaur-tabs-set-bar 'under
-;;        x-underline-at-descent-line t
-;;        centaur-tabs-close-button "×"
-;;        centaur-tabs-modified-marker "Ø")
-;;  )
 
 (after! treemacs
   (setq +treemacs-git-mode 'extended
@@ -341,8 +325,6 @@
 (after! dap-mode
   (setq dap-auto-configure-features '(sessions locals controls tooltip)
         dap-python-executable "python3"))
-
-;; (add-hook! 'python-mode-hook #'(require 'dap-python))
 
 (add-hook 'dap-stopped-hook
           (lambda (arg) (call-interactively #'dap-hydra)))
@@ -360,14 +342,15 @@
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
 
-(custom-set-faces! '(org-date :foreground "#5b6268"))
-(custom-set-faces! '(org-document-title :height 1.75 :weight bold))
-(custom-set-faces! '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal))
-(custom-set-faces! '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal))
-(custom-set-faces! '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal))
-(custom-set-faces! '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal))
-(custom-set-faces! '(org-level-5 :foreground "#9093ae":weight normal))
-(custom-set-faces! '(org-level-6 :foreground "#90dfe0":weight normal))
+(custom-set-faces!
+  '(org-date :foreground "#5b6268")
+  '(org-document-title :height 1.75 :weight bold)
+  '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal)
+  '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal)
+  '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal)
+  '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal)
+  '(org-level-5 :foreground "#9093ae":weight normal)
+  '(org-level-6 :foreground "#90dfe0":weight normal))
 
 (after! org-capture
     (setq org-capture-templates
@@ -376,13 +359,16 @@
         ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
-(after! go-mode (set-ligatures! 'go-mode
-    :def "func"
-    :true "true" :false "false"
-    :int "int" :str "string"
-    :float "float" :bool "bool"
-    :for "for"
-    :return "return" ))
+(after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
+  (set-ligatures! 'go-mode
+                  :def "func"
+                  :true "true" :false "false"
+                  :int "int" :str "string"
+                  :float "float" :bool "bool"
+                  :for "for"
+                  :return "return" )
+  (setq-hook! 'go-mode
+    lsp-enable-file-watchers nil))
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)

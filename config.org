@@ -20,7 +20,7 @@ Lets get this config started!
 - [[#packages][Packages]]
   - [[#hugo-support][Hugo support]]
   - [[#discord-rich-presence][discord rich presence]]
-  - [[#dired-previews][dired previews]]
+  - [[#dired-previews-peep-dired][dired previews (peep-dired)]]
   - [[#tldr-integration][tldr integration]]
   - [[#selectric-mode][selectric-mode]]
   - [[#evil-tutor][Evil tutor]]
@@ -122,11 +122,6 @@ get stuck here
  :desc "Toggle Tabs""t B" #'centaur-tabs-local-mode
  :desc "Open Elfeed""o l" #'elfeed
 
- (:after dired (:map dired-mode-map
-                :n "j" #'peep-dired-next-file
-                :n "k" #'peep-dired-prev-file
-                :localleader
-                "p" #'peep-dired))
 
  (:after spell-fu (:map override ;; HACK spell-fu does not define a modemap
                    :n [return]
@@ -269,12 +264,25 @@ know)
   ;; (discord-emacs-run "747913611426529440") ;;mine
   (discord-emacs-run "384815451978334208")) ;;default
 #+END_SRC
-** TODO dired previews
-this is meant to give me a preview of the file in dired (or a peep). but I have
-not set it up
+** TODO dired previews (peep-dired)
+this is meant to give me a preview of the file in dired (or a peep). at the
+moment it slows me down so its defered for the time being
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! peep-dired)
 #+END_SRC
+
+#+begin_src emacs-lisp
+(use-package! peep-dired
+  ;; :after dired
+  :defer t
+  :config
+  (setq peep-dired-cleanup-on-disable t)
+  (map! (:after dired (:map dired-mode-map
+                       :n "j" #'peep-dired-next-file
+                       :n "k" #'peep-dired-prev-file
+                       :localleader
+                       "p" #'peep-dired))))
+#+end_src
 ** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
 a lot of useless information and .. no information. Now in emacs!
@@ -284,8 +292,8 @@ a lot of useless information and .. no information. Now in emacs!
 
 #+begin_src emacs-lisp
 (use-package! tldr
-  :defer t
   :config
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
   (setq tldr-enabled-categories '("common" "linux")))
 #+end_src
 ** selectric-mode
@@ -559,73 +567,70 @@ mu4e, some are small like dired. some are well sized. They are all loved tho!
 (after! ivy
   (setq ivy-height 20
         ivy-wrap nil
-        ivy-magic-slash-non-match-action t))
+        ivy-magic-slash-non-match-action t)
+  (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
 #+END_SRC
 
 this is to make prescient a little more intelligent
 #+BEGIN_SRC emacs-lisp
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)
+(setq-default history-length 10000)
+(setq-default prescient-history-length 10000)
 #+END_SRC
 
 ** ui
 *** Doom
-This is the main module to say what Doom looks like! I put all of my ont
+This is the main module to say what Doom looks like! I put all of my font
 settings and all of that fun stuff here
+
+Inconsolata is the best font that I have used... but it does not italic well.
+if you do know of a better way. do get in touch!
 
 #+BEGIN_SRC emacs-lisp
 (setq! doom-font
-      (font-spec :family "Inconsolata NF" :size 15)
-      doom-big-font
-      (font-spec :family "Inconsolata NF" :size 25)
-      doom-variable-pitch-font
-      (font-spec :family "Inconsolata NF" :size 15))
+       (font-spec :family "Inconsolata NF" :size 15)
+       doom-big-font
+       (font-spec :family "Inconsolata NF" :size 25))
+;; doom-variable-pitch-font
+;; (font-spec :family "Inconsolata NF" :size 15))
+#+end_src
 
-;;(setq! doom-font
-;;      (font-spec :family "Inconsolata" :size 15)
-;;      doom-big-font
-;;      (font-spec :family "Inconsolata" :size 25)
-;;      doom-variable-pitch-font
-;;      (font-spec :family "Inconsolata" :size 15))
-
-;; (setq! doom-font
-;;       (font-spec :family "Comic Mono" :size 15)
-;;       doom-big-font
-;;       (font-spec :family "Comic Mono" :size 25))
-
+the comments for horizon are borderline unreadable so now we have brighter
+comments
+#+begin_src emacs-lisp
 (after! doom-themes
   (setq! doom-themes-enable-bold t
-        doom-themes-enable-italic t
-        doom-horizon-brighter-comments t))
+         doom-themes-enable-italic t
+         doom-horizon-brighter-comments t))
+#+end_src
+
+I wanted my comments and keywords to be italics. I may need to change fonts..
+#+begin_src  emacs-lisp
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 #+END_SRC
 
 My theme
-this will load up 2 diffrent themes one for the terminal and one for the gui
+this will load up 2 different themes one for the terminal and one for the gui.
+turns out that the emacs client works differently so this is not something that
+I can use...
 #+BEGIN_SRC emacs-lisp
-(when (not(display-graphic-p)) (setq doom-theme 'horizon))
-(setq doom-theme 'doom-horizon)
-;;(setq doom-theme 'doom-horizon-light-theme)
+(if (not(display-graphic-p))
+    (setq doom-theme 'horizon)
+  (setq doom-theme 'doom-horizon))
 #+end_src
 *** Doom Dashboard
-#+BEGIN_SRC emacs-lisp
-(setq +doom-dashboard-name "*doom*")
-#+END_SRC
 
+now this is my fancy splash image I need to move over to
 #+BEGIN_SRC emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
 #+END_SRC
 
-
+I am starting to experimenting with adding stuff to the dashboard
 #+begin_src emacs-lisp
-(defun yeet/text () ; I will insert this into the dashboard TODO
-  (insert "your dumb"))
+(add-hook! '+doom-dashboard-functions :append
+  (insert "\n" (+doom-dashboard--center +doom-dashboard--width "Get back to work")))
 #+end_src
-
-#+RESULTS:
-: yeet/text
 
 *** Modeline
 #+BEGIN_SRC emacs-lisp
@@ -635,13 +640,13 @@ this will load up 2 diffrent themes one for the terminal and one for the gui
         doom-modeline-icon 't
         doom-modeline-modal-icon 'nil
         doom-modeline-env-version t
-        doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
         doom-modeline-continuous-word-count-modes '(text-mode)
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
-        doom-modeline-persp-icon nil))
+        doom-modeline-persp-icon t
+        doom-modeline-github t))
 #+END_SRC
 
 I stole this from @tecosaur Its frankly a great addition (this is a theme
@@ -688,20 +693,10 @@ I don't use tabs so a lot of this is not really maintained...
           x-underline-at-descent-line t
           centaur-tabs-close-button "×"
           centaur-tabs-modified-marker "Ø")))
-;; (use-package! centaur-tabs
-;;  :config
-;;  (centaur-tabs-headline-match)
-;;  (setq centaur-tabs-style "box"
-;;        centaur-tabs-height 32
-;;        centaur-tabs-set-bar 'under
-;;        x-underline-at-descent-line t
-;;        centaur-tabs-close-button "×"
-;;        centaur-tabs-modified-marker "Ø")
-;;  )
 #+END_SRC
 *** Treemacs
-this provides a vscode like sidebar. I acutally use dired a lot more but I guess
-its still useful for presentataions
+this provides a vscode like sidebar. I actually use dired a lot more but I guess
+its still useful for presentation's
 #+BEGIN_SRC emacs-lisp
 (after! treemacs
   (setq +treemacs-git-mode 'extended
@@ -717,9 +712,8 @@ out so I will have to fix that eventually
   (setq dap-auto-configure-features '(sessions locals controls tooltip)
         dap-python-executable "python3"))
 #+end_src
-#+begin_src emacs-lisp
-;; (add-hook! 'python-mode-hook #'(require 'dap-python))
-#+end_src
+
+this does a thing
 #+begin_src emacs-lisp
 (add-hook 'dap-stopped-hook
           (lambda (arg) (call-interactively #'dap-hydra)))
@@ -755,16 +749,18 @@ here we are. do note that I have copied all of the foreground info over that
 becuse the ~inherit~ value (setter?, key? idk) did not exist untill I looked it
 up it would have looked like ~..:inherit outline-x~ where x is the level of the
 heading you want to change. This just locks me into the horizon colour scheme
-but there are worst things
+but there are worst things. The better way would be to change ~outline-x~
+directly
 #+begin_src emacs-lisp
-(custom-set-faces! '(org-date :foreground "#5b6268"))
-(custom-set-faces! '(org-document-title :height 1.75 :weight bold))
-(custom-set-faces! '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal))
-(custom-set-faces! '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal))
-(custom-set-faces! '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal))
-(custom-set-faces! '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal))
-(custom-set-faces! '(org-level-5 :foreground "#9093ae":weight normal))
-(custom-set-faces! '(org-level-6 :foreground "#90dfe0":weight normal))
+(custom-set-faces!
+  '(org-date :foreground "#5b6268")
+  '(org-document-title :height 1.75 :weight bold)
+  '(org-level-1 :foreground "#21bfc2" :height 1.3 :weight normal)
+  '(org-level-2 :foreground "#6c6f93" :height 1.1 :weight normal)
+  '(org-level-3 :foreground "#b877db" :height 1.0 :weight normal)
+  '(org-level-4 :foreground "#58cfd1":height 1.0 :weight normal)
+  '(org-level-5 :foreground "#9093ae":weight normal)
+  '(org-level-6 :foreground "#90dfe0":weight normal))
   #+END_SRC
 
 
@@ -777,17 +773,21 @@ but there are worst things
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
 
-*** TODO Go
-Go lsp is a little broken. I am not sure if its the client, server or the
-debugger but its something. Its not the debugger
+*** Go
+Go and lsp have not been behaving like they should. the file watchers have been
+misbehaving and now they have been disabled for go mode. That fixes the issue
+but means lsp will not watch files in the workspace (a small price to pay imo)
 #+BEGIN_SRC emacs-lisp
-(after! go-mode (set-ligatures! 'go-mode
-    :def "func"
-    :true "true" :false "false"
-    :int "int" :str "string"
-    :float "float" :bool "bool"
-    :for "for"
-    :return "return" ))
+(after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
+  (set-ligatures! 'go-mode
+                  :def "func"
+                  :true "true" :false "false"
+                  :int "int" :str "string"
+                  :float "float" :bool "bool"
+                  :for "for"
+                  :return "return" )
+  (setq-hook! 'go-mode
+    lsp-enable-file-watchers nil))
 #+END_SRC
 *** Python
 Python is great is it not 🐍
@@ -843,7 +843,6 @@ on the folders remember that they come from what you set in your [[https://githu
       :desc "attach"        "a" #'mail-add-attachment)
 #+END_SRC
 
-I want my mail to update on startup
 #+BEGIN_SRC emacs-lisp
 ;; FIXME
 (add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
