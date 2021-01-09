@@ -219,7 +219,7 @@
   :after dired
   :config
   (map! :map dired-mode-map
-        (:prefix "C-d"
+        (:prefix "C-s"
          :n "d" #'dired-dragon
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
@@ -235,7 +235,7 @@
 
 (use-package! snow
   :config
-  (set-popup-rule! "^\*snow\*$" :quit t :modeline nil)) ;; FIXME does not work
+  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
 
 (after! company
   (setq company-idle-delay 0.7 ; I like my autocomplete like my tea fast not oftern but still there
@@ -267,8 +267,10 @@
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
-(if (not(display-graphic-p))
-    (setq doom-theme 'horizon)
+(if (not (daemonp))
+    (if (not (display-graphic-p))
+        (setq doom-theme 'horizon)
+      (setq doom-theme 'doom-horizon))
   (setq doom-theme 'doom-horizon))
 
 (setq fancy-splash-image (concat doom-private-dir "icons/emacs-icon.png"))
@@ -288,7 +290,13 @@
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
         doom-modeline-persp-icon t
-        doom-modeline-github t))
+        doom-modeline-github t
+        doom-modeline-mu4e t))
+
+(after! doom-modeline
+  (doom-modeline-def-modeline 'main
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
+    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker bar)))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -382,7 +390,9 @@
 (after! mu4e
   (setq
    mail-user-agent 'mu4e-user-agent
-   mu4e-view-use-gnus t))
+   mu4e-view-use-gnus t
+   smtpmail-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-service 25))
 
 (load! "+mu4e.el" doom-private-dir)
 
@@ -401,7 +411,7 @@
       :desc "attach"        "a" #'mail-add-attachment)
 
 ;; FIXME
-(add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
+;; (add-hook! 'mu4e-main-mode-hook #'mu4e-update-mail-and-index)
 
 (setq sendmail-program (executable-find "msmtp")
       send-mail-function #'smtpmail-send-it

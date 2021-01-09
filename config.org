@@ -283,6 +283,7 @@ moment it slows me down so its defered for the time being
                        :localleader
                        "p" #'peep-dired))))
 #+end_src
+
 ** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
 a lot of useless information and .. no information. Now in emacs!
@@ -478,18 +479,20 @@ Some games I will probably add
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
 wellish and ,The drop commands don't work at all
 #+begin_src emacs-lisp :tangle packages.el
-(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+(package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
+;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 #+end_src
 #+begin_src emacs-lisp
 (use-package! dired-dragon
   :after dired
   :config
   (map! :map dired-mode-map
-        (:prefix "C-d"
+        (:prefix "C-s"
          :n "d" #'dired-dragon
          :n "s" #'dired-dragon-stay
          :n "i" #'dired-dragon-individual)))
 #+end_src
+
 ** org super agenda
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! origami)
@@ -549,8 +552,9 @@ dired sidebar.. for Ibuffer
 #+begin_src emacs-lisp
 (use-package! snow
   :config
-  (set-popup-rule! "^\*snow\*$" :quit t :modeline nil)) ;; FIXME does not work
+  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
 #+end_src
+
 * Modules
 These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
@@ -615,10 +619,13 @@ this will load up 2 different themes one for the terminal and one for the gui.
 turns out that the emacs client works differently so this is not something that
 I can use...
 #+BEGIN_SRC emacs-lisp
-(if (not(display-graphic-p))
-    (setq doom-theme 'horizon)
+(if (not (daemonp))
+    (if (not (display-graphic-p))
+        (setq doom-theme 'horizon)
+      (setq doom-theme 'doom-horizon))
   (setq doom-theme 'doom-horizon))
 #+end_src
+
 *** Doom Dashboard
 
 now this is my fancy splash image I need to move over to
@@ -646,9 +653,17 @@ I am starting to experimenting with adding stuff to the dashboard
         doom-modeline-icon (display-graphic-p)
         doom-modeline-persp-name t
         doom-modeline-persp-icon t
-        doom-modeline-github t))
+        doom-modeline-github t
+        doom-modeline-mu4e t))
 #+END_SRC
-
+This was all for a little padding. I could remove the stuff I don't need but
+whats the fun in that?
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (doom-modeline-def-modeline 'main
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
+    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker bar)))
+#+end_src
 I stole this from @tecosaur Its frankly a great addition (this is a theme
 throughout @tecosaurs config)
 As we expect that the encoding is UTF-8 we remove it from the modeline untill we
@@ -815,7 +830,9 @@ into doom soon! so it will be evaculating my config
 (after! mu4e
   (setq
    mail-user-agent 'mu4e-user-agent
-   mu4e-view-use-gnus t))
+   mu4e-view-use-gnus t
+   smtpmail-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-service 25))
 #+END_SRC
 I have stolen this from @tecosaur again you can check out his config of mu4e
 [[https://tecosaur.github.io/emacs-config/config.html#mail][here]]. Now there is a lot of it so lets just put it into its own file!
@@ -845,7 +862,7 @@ on the folders remember that they come from what you set in your [[https://githu
 
 #+BEGIN_SRC emacs-lisp
 ;; FIXME
-(add-hook! 'mu4e-startup-hook #'mu4e-update-mail-and-index)
+;; (add-hook! 'mu4e-main-mode-hook #'mu4e-update-mail-and-index)
 #+END_SRC
 
 I use msmtp to send my mail as its a little faster and has room for expansion
