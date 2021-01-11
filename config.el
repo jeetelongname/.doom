@@ -197,6 +197,7 @@
 
 (use-package! keycast
   :commands keycast-mode
+  :after doom-modeline
   :config
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line."
@@ -394,8 +395,6 @@
    smtpmail-smtp-server "smtp.gmail.com"
    smtpmail-smtp-service 25))
 
-(load! "+mu4e.el" doom-private-dir)
-
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
                       (mu4e-drafts-folder     . "/gmail/\[Gmail\]/Drafts")
@@ -403,37 +402,21 @@
                       (mu4e-refile-folder     . "/gmail/\[Gmail\]/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
 
-(map! :localleader ; HACK ; works but is now in all org buffers
-      :map org-mode-map :prefix "m"
-      :desc "send and exit" "s" #'message-send-and-exit
-      :desc "kill buffer"   "d" #'message-kill-buffer
-      :desc "save draft"    "S" #'message-dont-send
-      :desc "attach"        "a" #'mail-add-attachment)
-
-;; FIXME
-;; (add-hook! 'mu4e-main-mode-hook #'mu4e-update-mail-and-index)
-
 (setq sendmail-program (executable-find "msmtp")
       send-mail-function #'smtpmail-send-it
       message-sendmail-f-is-evil t
       message-sendmail-extra-arguments '("--read-envelope-from")
       message-send-mail-function #'message-send-mail-with-sendmail)
 
-(use-package! org-msg
-  :config
-  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-        org-msg-startup "hidestars indent inlineimages"
-        org-msg-greeting-fmt "\nHi *%s*,\n\n"
-        org-msg-greeting-name-limit 3
-        org-msg-text-plain-alternative t
+(after! mu4e
+  (setq org-msg-greeting-fmt "\nHi *%s*,\n\n"
         org-msg-signature "
  Regards,
 
  #+begin_signature
  -- *Jeetaditya Chatterjee* \\\\
  /Sent using my text editor/
- #+end_signature")
- (org-msg-mode))
+ #+end_signature"))
 
 (after! circe
   (set-irc-server! "chat.freenode.net"

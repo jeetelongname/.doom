@@ -43,8 +43,8 @@
 ;;   :recipe (:host github
 ;;            :repo "sprang/emacs-2048"))
 
-(package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
-;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+;; (package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
+(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 
 (package! origami)
 ;; (package! org-super-agenda)

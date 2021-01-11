@@ -14,6 +14,7 @@ Lets get this config started!
 ** Table of Contents :TOC_3:
 - [[#introduction][Introduction]]
 - [[#rudimentary-configuration][Rudimentary configuration]]
+  - [[#quick-fixes][Quick fixes]]
   - [[#keybinds][Keybinds]]
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
@@ -110,6 +111,7 @@ spawn emacs somewhat in the center of my screen
             `(width text-pixels ,width)
             `(height text-pixels ,height)))
 #+END_SRC
+** Quick fixes
 
 ** Keybinds
 These are my general keybinds they should not belong to any module. thus they
@@ -444,6 +446,7 @@ also bound it
 #+BEGIN_SRC emacs-lisp
 (use-package! keycast
   :commands keycast-mode
+  :after doom-modeline
   :config
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line."
@@ -477,10 +480,10 @@ Some games I will probably add
 #+end_src
 ** dired drag and drop
 I want drag and drop so I just wrapped dragon in elisp the drag commands work
-wellish and ,The drop commands don't work at all
+wellish
 #+begin_src emacs-lisp :tangle packages.el
-(package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
-;; (package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+;; (package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
+(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
 #+end_src
 #+begin_src emacs-lisp
 (use-package! dired-dragon
@@ -823,8 +826,8 @@ turns out doom has support for latexmk already
 
 ** email
 *** mu4e
-there is a lot of stuff in here. good news! a lot of it is going to get mergeed
-into doom soon! so it will be evaculating my config
+Whats better than email? email in emacs! mu4e has been fine for me so I dont
+think I will
 #+BEGIN_SRC emacs-lisp
 (setq +mu4e-backend 'mbsync)
 (after! mu4e
@@ -833,11 +836,6 @@ into doom soon! so it will be evaculating my config
    mu4e-view-use-gnus t
    smtpmail-smtp-server "smtp.gmail.com"
    smtpmail-smtp-service 25))
-#+END_SRC
-I have stolen this from @tecosaur again you can check out his config of mu4e
-[[https://tecosaur.github.io/emacs-config/config.html#mail][here]]. Now there is a lot of it so lets just put it into its own file!
-#+BEGIN_SRC emacs-lisp
-(load! "+mu4e.el" doom-private-dir)
 #+END_SRC
 
 Setting my email using ~set-email-acount~. its a simple affair If you are stuck
@@ -851,20 +849,6 @@ on the folders remember that they come from what you set in your [[https://githu
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(map! :localleader ; HACK ; works but is now in all org buffers
-      :map org-mode-map :prefix "m"
-      :desc "send and exit" "s" #'message-send-and-exit
-      :desc "kill buffer"   "d" #'message-kill-buffer
-      :desc "save draft"    "S" #'message-dont-send
-      :desc "attach"        "a" #'mail-add-attachment)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; FIXME
-;; (add-hook! 'mu4e-main-mode-hook #'mu4e-update-mail-and-index)
-#+END_SRC
-
 I use msmtp to send my mail as its a little faster and has room for expansion
 #+begin_src emacs-lisp
 (setq sendmail-program (executable-find "msmtp")
@@ -873,24 +857,21 @@ I use msmtp to send my mail as its a little faster and has room for expansion
       message-sendmail-extra-arguments '("--read-envelope-from")
       message-send-mail-function #'message-send-mail-with-sendmail)
 #+end_src
-**** org-msg
+
+
 #+BEGIN_SRC emacs-lisp
-(use-package! org-msg
-  :config
-  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-        org-msg-startup "hidestars indent inlineimages"
-        org-msg-greeting-fmt "\nHi *%s*,\n\n"
-        org-msg-greeting-name-limit 3
-        org-msg-text-plain-alternative t
+(after! mu4e
+  (setq org-msg-greeting-fmt "\nHi *%s*,\n\n"
         org-msg-signature "
  Regards,
 
- #+begin_signature
+ ,#+begin_signature
  -- *Jeetaditya Chatterjee* \\\\
  /Sent using my text editor/
- #+end_signature")
- (org-msg-mode))
+ ,#+end_signature"))
 #+END_SRC
+
+
 ** App
 *** irc
 I have a beard and I do like wasting time...

@@ -145,7 +145,7 @@
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
+       nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org
         +dragndrop
@@ -176,7 +176,7 @@
        yaml                ; JSON, but readable
 
        :email
-       (mu4e +gmail)
+       (mu4e +gmail +org)
        ;;notmuch
        ;;(wanderlust +gmail)
 
