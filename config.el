@@ -409,12 +409,13 @@
       message-send-mail-function #'message-send-mail-with-sendmail)
 
 (map! (:map org-msg-edit-mode-map
+       :n "<tab>" #'org-msg-tab
        :localleader
-       "<tab>" #'org-msg-tab
-       "k" #'org-msg-edit-kill-buffer
-       "s" #'message-goto-subject
-       "b" #'org-msg-goto-body
-       "a" #'org-msg-attach))
+       (:prefix "m"
+        "k" #'org-msg-edit-kill-buffer
+        "s" #'message-goto-subject
+        "b" #'org-msg-goto-body
+        "a" #'org-msg-attach)))
 
 (after! mu4e
   (setq org-msg-greeting-fmt "\nHi *%s*,\n\n"

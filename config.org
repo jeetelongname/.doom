@@ -862,15 +862,16 @@ Adding some kebinding under localleader. this should make it a little easier to
 do mail stuff. I do like =C-c C-c= to send tho
 #+begin_src emacs-lisp
 (map! (:map org-msg-edit-mode-map
+       :n "<tab>" #'org-msg-tab
        :localleader
-       "<tab>" #'org-msg-tab
-       "k" #'org-msg-edit-kill-buffer
-       "s" #'message-goto-subject
-       "b" #'org-msg-goto-body
-       "a" #'org-msg-attach))
+       (:prefix "m"
+        "k" #'org-msg-edit-kill-buffer
+        "s" #'message-goto-subject
+        "b" #'org-msg-goto-body
+        "a" #'org-msg-attach)))
 #+end_src
 
-Theese are the settings for org-msg I may switch them to a snippet tho as I can
+These are the settings for org-msg I may switch them to a snippet tho as I can
 toggle the kind of signature I want to use then
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
