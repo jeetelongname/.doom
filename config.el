@@ -297,7 +297,7 @@
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker bar)))
+    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process checker vcs "  " bar)))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
@@ -387,20 +387,16 @@
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
 
-(setq +mu4e-backend 'mbsync)
-(after! mu4e
-  (setq
-   mail-user-agent 'mu4e-user-agent
-   mu4e-view-use-gnus t
-   smtpmail-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-service 25))
-
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
                       (mu4e-drafts-folder     . "/gmail/\[Gmail\]/Drafts")
                       (mu4e-trash-folder      . "/gmail/\[Gmail\]/Trash")
                       (mu4e-refile-folder     . "/gmail/\[Gmail\]/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
+
+(after! mu4e
+  (setq smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 25))
 
 (setq sendmail-program (executable-find "msmtp")
       send-mail-function #'smtpmail-send-it
@@ -418,9 +414,10 @@
         "a" #'org-msg-attach)))
 
 (after! mu4e
-  (setq org-msg-greeting-fmt "\nHi *%s*,\n\n"
-        org-msg-signature "\nRegards,
-
+  (setq
+   ;; org-msg-default-alternatives '(html)
+   org-msg-greeting-fmt "\nHi *%s*,\n\n"
+   org-msg-signature "\nRegards,
  #+begin_signature
  -- *Jeetaditya Chatterjee* \\\\
  /Sent using my text editor/

@@ -661,12 +661,14 @@ I am starting to experimenting with adding stuff to the dashboard
 #+END_SRC
 This was all for a little padding. I could remove the stuff I don't need but
 whats the fun in that?
+
 #+begin_src emacs-lisp
 (after! doom-modeline
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker bar)))
+    '(objed-state misc-info persp-name grip irc mu4e github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process checker vcs "  " bar)))
 #+end_src
+
 I stole this from @tecosaur Its frankly a great addition (this is a theme
 throughout @tecosaurs config)
 As we expect that the encoding is UTF-8 we remove it from the modeline untill we
@@ -828,15 +830,6 @@ turns out doom has support for latexmk already
 *** mu4e
 Whats better than email? email in emacs! mu4e has been fine for me so I dont
 think I will
-#+BEGIN_SRC emacs-lisp
-(setq +mu4e-backend 'mbsync)
-(after! mu4e
-  (setq
-   mail-user-agent 'mu4e-user-agent
-   mu4e-view-use-gnus t
-   smtpmail-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-service 25))
-#+END_SRC
 
 Setting my email using ~set-email-acount~. its a simple affair If you are stuck
 on the folders remember that they come from what you set in your [[https://github.com/jeetelongname/dotfiles/blob/master/mail/.mbsyncrc#L31][mail fetcher config]]
@@ -848,6 +841,13 @@ on the folders remember that they come from what you set in your [[https://githu
                       (mu4e-refile-folder     . "/gmail/\[Gmail\]/All Mail")
                       (smtpmail-smtp-user     . "jeetelongname@gmail.com"))t)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(after! mu4e
+  (setq smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 25))
+#+END_SRC
+
 
 I use msmtp to send my mail as its a little faster and has room for expansion
 #+begin_src emacs-lisp
@@ -875,16 +875,20 @@ These are the settings for org-msg I may switch them to a snippet tho as I can
 toggle the kind of signature I want to use then
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq org-msg-greeting-fmt "\nHi *%s*,\n\n"
-        org-msg-signature "\nRegards,
-
+  (setq
+   ;; org-msg-default-alternatives '(html)
+   org-msg-greeting-fmt "\nHi *%s*,\n\n"
+   org-msg-signature "\nRegards,
  ,#+begin_signature
  -- *Jeetaditya Chatterjee* \\\\
  /Sent using my text editor/
  ,#+end_signature"))
 #+END_SRC
 
-
+I update my mail when I feel like it so this is a little redundant for me
+#+begin_src emacs-lisp :tangle packages.el
+(package! mu4e-alert :disable t)
+#+end_src
 ** App
 *** irc
 I have a beard and I do like wasting time...

@@ -59,3 +59,5 @@
 (package! ibuffer-sidebar)
 
 (package! snow)
+
+(package! mu4e-alert :disable t)
