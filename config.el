@@ -376,8 +376,9 @@
                   :float "float" :bool "bool"
                   :for "for"
                   :return "return" )
-  (setq-hook! 'go-mode
-    lsp-enable-file-watchers nil))
+  )
+(setq-hook! 'go-mode-hook
+  lsp-enable-file-watchers nil)
 
 (setq! +python-ipython-command '("ipython3" "-i" "--simple-prompt" "--no-color-info"))
 (set-repl-handler! 'python-mode #'+python/open-ipython-repl)

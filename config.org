@@ -806,8 +806,9 @@ but means lsp will not watch files in the workspace (a small price to pay imo)
                   :float "float" :bool "bool"
                   :for "for"
                   :return "return" )
-  (setq-hook! 'go-mode
-    lsp-enable-file-watchers nil))
+  )
+(setq-hook! 'go-mode-hook
+  lsp-enable-file-watchers nil)
 #+END_SRC
 *** Python
 Python is great is it not 🐍
