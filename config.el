@@ -424,6 +424,8 @@
  /Sent using my text editor/
  #+end_signature"))
 
+(custom-set-faces! '(mu4e-replied-face :foreground "#e95678" :inherit font-lock-builtin-face))
+
 (after! circe
   (set-irc-server! "chat.freenode.net"
                    '(:tls t
