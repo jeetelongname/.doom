@@ -612,9 +612,11 @@ settings and all of that fun stuff here
 +Inconsolata is the best font that *I* have used... but it does not italic well.+
 +if you do know of a better way. do get in touch!+
 
+Iosevka is my new best friend
+
 #+BEGIN_SRC emacs-lisp
 (setq! doom-font
-       (font-spec :family "Iosevka" :size 15)
+       (font-spec :family "Iosevka" :size 16)
        doom-big-font
        (font-spec :family "Iosevka" :size 25))
 

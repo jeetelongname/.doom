@@ -258,7 +258,7 @@
 (setq-default prescient-history-length 10000)
 
 (setq! doom-font
-       (font-spec :family "Iosevka" :size 15)
+       (font-spec :family "Iosevka" :size 16)
        doom-big-font
        (font-spec :family "Iosevka" :size 25))
 
