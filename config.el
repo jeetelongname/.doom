@@ -113,10 +113,11 @@
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 
-(use-package! discord-emacs ;; for face value discord intergration
-  :config
-  ;; (discord-emacs-run "747913611426529440") ;;mine
-  (discord-emacs-run "384815451978334208")) ;;default
+(when (daemonp)
+  (use-package! discord-emacs ;; for face value discord intergration
+    :config
+    ;; (discord-emacs-run "747913611426529440") ;;mine
+    (discord-emacs-run "384815451978334208"))) ;;default
 
 (use-package! peep-dired
   ;; :after dired
@@ -133,6 +134,10 @@
   :config
   (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
   (setq tldr-enabled-categories '("common" "linux")))
+
+(use-package! caddyfile-mode
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
 
 (use-package! eaf
   :defer t
@@ -253,9 +258,10 @@
 (setq-default prescient-history-length 10000)
 
 (setq! doom-font
-       (font-spec :family "Inconsolata NF" :size 15)
+       (font-spec :family "Iosevka" :size 15)
        doom-big-font
-       (font-spec :family "Inconsolata NF" :size 25))
+       (font-spec :family "Iosevka" :size 25))
+
 ;; doom-variable-pitch-font
 ;; (font-spec :family "Inconsolata NF" :size 15))
 
@@ -268,6 +274,7 @@
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
+;; (require 'rose-pine-theme-moon)
 (if (not (daemonp))
     (if (not (display-graphic-p))
         (setq doom-theme 'horizon)
@@ -336,7 +343,7 @@
         dap-python-executable "python3"))
 
 (add-hook 'dap-stopped-hook
-          (lambda (arg) (call-interactively #'dap-hydra)))
+          (lambda () (call-interactively #'dap-hydra)))
 
 (map! :leader "od" nil
       :leader "od" #'dap-debug
@@ -346,7 +353,9 @@
 
 (after! org
   (setq org-directory "~/org-notes/"
-        org-agenda-files (list org-directory))
+        org-agenda-files (list org-directory)
+        org-hide-emphasis-markers t)
+
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
@@ -387,6 +396,9 @@
 
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
+
+(setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
+(setq +format-on-save-enabled-modes '(not web-mode))
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")

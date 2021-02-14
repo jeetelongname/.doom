@@ -17,18 +17,17 @@
 
 (package! selectric-mode)
 
+(package! caddyfile-mode)
+
 (package! evil-tutor)
 
 (package! eaf :recipe
   (:host github
    :repo "manateelazycat/emacs-application-framework"
    :files ("*.el" "*.py" "core" "app")
-   :no-byte-compile t))
+   :build (:not compile)))
 
 (package! atomic-chrome)
-
-(package! horizon-theme)
-(unpin! doom-themes)
 
 (package! nyan-mode)
 (package! parrot)
@@ -59,5 +58,10 @@
 (package! ibuffer-sidebar)
 
 (package! snow)
+
+(package! horizon-theme)
+(unpin! doom-themes)
+
+(package! rose-pine-emacs :recipe (:host github :repo "Caelie/rose-pine-emacs"))
 
 (package! mu4e-alert :disable t)

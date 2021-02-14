@@ -24,10 +24,10 @@ Lets get this config started!
   - [[#dired-previews-peep-dired][dired previews (peep-dired)]]
   - [[#tldr-integration][tldr integration]]
   - [[#selectric-mode][selectric-mode]]
+  - [[#caddy][Caddy]]
   - [[#evil-tutor][Evil tutor]]
   - [[#emacs-application-framework][emacs application framework]]
   - [[#atomic-chrome][atomic chrome]]
-  - [[#themes][themes]]
   - [[#modeline-fun][modeline fun]]
   - [[#vim][vim]]
   - [[#pretty-code-shots][pretty code shots]]
@@ -41,6 +41,7 @@ Lets get this config started!
     - [[#dired-sidebar][Dired sidebar]]
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
   - [[#snow][snow]]
+  - [[#themes][themes]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -61,6 +62,7 @@ Lets get this config started!
     - [[#go][Go]]
     - [[#python][Python]]
     - [[#latex][LaTeX]]
+    - [[#web][Web]]
   - [[#email][email]]
     - [[#mu4e][mu4e]]
   - [[#app][App]]
@@ -260,11 +262,14 @@ know)
            :files ("*.el")))
 #+END_SRC
 
+I use non daemon sessions for testing I would much rather it would not be used
+(and block the closing of emacs)
 #+BEGIN_SRC emacs-lisp
-(use-package! discord-emacs ;; for face value discord intergration
-  :config
-  ;; (discord-emacs-run "747913611426529440") ;;mine
-  (discord-emacs-run "384815451978334208")) ;;default
+(when (daemonp)
+  (use-package! discord-emacs ;; for face value discord intergration
+    :config
+    ;; (discord-emacs-run "747913611426529440") ;;mine
+    (discord-emacs-run "384815451978334208"))) ;;default
 #+END_SRC
 ** TODO dired previews (peep-dired)
 this is meant to give me a preview of the file in dired (or a peep). at the
@@ -305,6 +310,16 @@ loud keyboard
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! selectric-mode)
 #+END_SRC
+** Caddy
+#+begin_src emacs-lisp :tangle packages.el
+(package! caddyfile-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! caddyfile-mode
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
+#+end_src
 ** Evil tutor
 I wanted to see the differences with its vim counterparts
 #+BEGIN_SRC emacs-lisp :tangle packages.el
@@ -326,7 +341,7 @@ sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
   (:host github
    :repo "manateelazycat/emacs-application-framework"
    :files ("*.el" "*.py" "core" "app")
-   :no-byte-compile t))
+   :build (:not compile)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -361,12 +376,6 @@ button on a keybind in my browser)
           ("reddit\\.com" . fundamental-mode)))
 
   (atomic-chrome-start-server))
-#+end_src
-** themes
-this was for a terminal  experiment that did not work
-#+begin_src emacs-lisp :tangle packages.el
-(package! horizon-theme)
-(unpin! doom-themes)
 #+end_src
 ** modeline fun
 /whats life without a little colour?/
@@ -558,6 +567,17 @@ dired sidebar.. for Ibuffer
   (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
 #+end_src
 
+** themes
+this was for a terminal  experiment that did not work
+#+begin_src emacs-lisp :tangle packages.el
+(package! horizon-theme)
+(unpin! doom-themes)
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! rose-pine-emacs :recipe (:host github :repo "Caelie/rose-pine-emacs"))
+#+end_src
 * Modules
 These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
@@ -589,14 +609,15 @@ this is to make prescient a little more intelligent
 This is the main module to say what Doom looks like! I put all of my font
 settings and all of that fun stuff here
 
-Inconsolata is the best font that I have used... but it does not italic well.
-if you do know of a better way. do get in touch!
++Inconsolata is the best font that *I* have used... but it does not italic well.+
++if you do know of a better way. do get in touch!+
 
 #+BEGIN_SRC emacs-lisp
 (setq! doom-font
-       (font-spec :family "Inconsolata NF" :size 15)
+       (font-spec :family "Iosevka" :size 15)
        doom-big-font
-       (font-spec :family "Inconsolata NF" :size 25))
+       (font-spec :family "Iosevka" :size 25))
+
 ;; doom-variable-pitch-font
 ;; (font-spec :family "Inconsolata NF" :size 15))
 #+end_src
@@ -622,6 +643,7 @@ this will load up 2 different themes one for the terminal and one for the gui.
 turns out that the emacs client works differently so this is not something that
 I can use...
 #+BEGIN_SRC emacs-lisp
+;; (require 'rose-pine-theme-moon)
 (if (not (daemonp))
     (if (not (display-graphic-p))
         (setq doom-theme 'horizon)
@@ -736,7 +758,7 @@ out so I will have to fix that eventually
 this does a thing
 #+begin_src emacs-lisp
 (add-hook 'dap-stopped-hook
-          (lambda (arg) (call-interactively #'dap-hydra)))
+          (lambda () (call-interactively #'dap-hydra)))
 #+end_src
 #+begin_src emacs-lisp
 (map! :leader "od" nil
@@ -758,7 +780,9 @@ it
 #+BEGIN_SRC emacs-lisp
 (after! org
   (setq org-directory "~/org-notes/"
-        org-agenda-files (list org-directory))
+        org-agenda-files (list org-directory)
+        org-hide-emphasis-markers t)
+
   (when (featurep! :lang org +pretty) ;; I used to use the +pretty flag but I now don't thus the `when'
     (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")
           org-superstar-headline-bullets-list '("⁕" "܅" "⁖" "⁘" "⁙" "⁜"))))
@@ -826,7 +850,19 @@ turns out doom has support for latexmk already
 (map! :map cdlatex-mode-map
       :i "TAB" #'cdlatex-tab)
 #+END_SRC
+*** TODO Web
+I just find the tidy formatter indent functionality annoying and redundant. so
+I changed it
+#+begin_src emacs-lisp
+(setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
+(setq +format-on-save-enabled-modes '(not web-mode))
+#+end_src
 
+#+begin_src conf :tangle tidy.conf
+indent: no  
+indent-spaces: 4
+gnu-emacs: yes
+#+end_src
 ** email
 *** mu4e
 Whats better than email? email in emacs! mu4e has been fine for me so I dont

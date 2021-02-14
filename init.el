@@ -12,7 +12,7 @@
 
        :completion
        (company            ; the ultimate code completion backend
-         +childframe)
+        +childframe)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy
@@ -35,10 +35,8 @@
        ;; neotree          ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
-
        ;;(ligatures +extra); ligatures and symbols to make your code pretty again
-
-       ;; tabs                ; a tab bar for Emacs
+       ;; tabs             ; a tab bar for Emacs
        treemacs            ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter           ; vcs diff in the fringe
@@ -138,21 +136,22 @@
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk
-        +cdlatex)
+        +cdlatex
+        +lsp)
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       nix               ; I hereby declare "nix geht mehr!"
+       nix                 ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org
+       (org                ; organize your plain life in plain text
         +dragndrop
         +pandoc
         +present
         ;; -pretty
-        +noter)            ; organize your plain life in plain text
+        +noter)
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -182,6 +181,7 @@
 
        :app
        calendar
+       everywhere        ; *leave* Emacs!? You must be joking
        irc               ; how neckbeards socialize
        (rss +org)        ; emacs as an RSS reader
        twitter           ; twitter client https://twitter.com/vnought
