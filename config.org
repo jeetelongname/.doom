@@ -904,8 +904,7 @@ I changed it
 #+begin_src emacs-lisp
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
 (setq +format-on-save-enabled-modes
-      '(not web-mode
-            js2-mode))
+      '(not web-mode))
 #+end_src
 
 #+begin_src conf :tangle tidy.conf

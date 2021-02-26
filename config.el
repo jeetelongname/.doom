@@ -420,8 +420,7 @@ there will be more..."
 
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
 (setq +format-on-save-enabled-modes
-      '(not web-mode
-            js2-mode))
+      '(not web-mode))
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
