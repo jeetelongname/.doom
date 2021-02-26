@@ -19,29 +19,34 @@ Lets get this config started!
   - [[#hooky-hooks][Hooky hooks]]
   - [[#funky-functions][funky functions]]
 - [[#packages][Packages]]
-  - [[#hugo-support][Hugo support]]
-  - [[#discord-rich-presence][discord rich presence]]
-  - [[#dired-previews-peep-dired][dired previews (peep-dired)]]
-  - [[#tldr-integration][tldr integration]]
-  - [[#selectric-mode][selectric-mode]]
-  - [[#caddy][Caddy]]
-  - [[#evil-tutor][Evil tutor]]
-  - [[#emacs-application-framework][emacs application framework]]
-  - [[#atomic-chrome][atomic chrome]]
-  - [[#modeline-fun][modeline fun]]
-  - [[#vim][vim]]
-  - [[#pretty-code-shots][pretty code shots]]
-  - [[#keycast][keycast]]
-  - [[#games][Games]]
-  - [[#dired-drag-and-drop][dired drag and drop]]
-  - [[#org-super-agenda][org super agenda]]
-  - [[#elfeed-goodies][elfeed-goodies]]
+  - [[#language-edditions][Language edditions]]
+    - [[#caddy][Caddy]]
+    - [[#vim][vim]]
+  - [[#package-edditons][Package edditons]]
+    - [[#hugo-support][Hugo support]]
+    - [[#dired-previews-peep-dired][dired previews (peep-dired)]]
+    - [[#modeline-fun][modeline fun]]
+    - [[#evil-tutor][Evil tutor]]
+    - [[#discord-rich-presence][discord rich presence]]
+    - [[#org-super-agenda][org super agenda]]
+    - [[#elfeed-goodies][elfeed-goodies]]
+    - [[#dired-drag-and-drop][dired drag and drop]]
+    - [[#themes][themes]]
+  - [[#outside-influence][Outside Influence]]
+    - [[#tldr-integration][tldr integration]]
+    - [[#atomic-chrome][atomic chrome]]
+    - [[#emacs-application-framework][emacs application framework]]
+    - [[#pretty-code-shots][pretty code shots]]
+    - [[#matrix][matrix]]
+  - [[#fun][fun!]]
+    - [[#keycast][keycast]]
+    - [[#selectric-mode][selectric-mode]]
+    - [[#games][Games]]
+    - [[#snow][snow]]
   - [[#sidebars][Sidebars]]
-    - [[#org-sidebar][Org Sidebar]]
     - [[#dired-sidebar][Dired sidebar]]
     - [[#ibuffer-sidebar][Ibuffer sidebar]]
-  - [[#snow][snow]]
-  - [[#themes][themes]]
+    - [[#org-sidebar][Org Sidebar]]
 - [[#modules][Modules]]
   - [[#completion][completion]]
     - [[#company][company]]
@@ -55,8 +60,11 @@ Lets get this config started!
     - [[#treemacs][Treemacs]]
   - [[#tools][tools]]
     - [[#debugger][debugger]]
+    - [[#magit][Magit]]
   - [[#emacs][emacs]]
     - [[#dired][dired]]
+  - [[#term][term]]
+    - [[#eshell][eshell]]
   - [[#lang][lang]]
     - [[#org][Org]]
     - [[#go][Go]]
@@ -232,7 +240,35 @@ A nice little header
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 #+END_SRC
-** Hugo support
+** Language edditions
+*** Caddy
+#+begin_src emacs-lisp :tangle packages.el
+(package! caddyfile-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! caddyfile-mode
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
+#+end_src
+*** vim
+because sacrilege is fun
+(this is mostly a mental exercise but it does work...) I can (alleged) also get lsp
+support as well so this may be a fun project to take on
+#+begin_src emacs-lisp :tangle packages.el
+(package! vimrc-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! vimrc-mode
+  :mode "\\.vim\\'"
+  :config
+  (sp-with-modes 'vimrc-mode
+    (sp-local-pair "\"" :action nil)))
+#+end_src
+
+** Package edditons
+*** Hugo support
 This is mostly just for the time stamp but it does come in handy
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! emacs-easy-hugo
@@ -248,7 +284,61 @@ This is mostly just for the time stamp but it does come in handy
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
 #+END_SRC
-** discord rich presence
+*** TODO dired previews (peep-dired)
+this is meant to give me a preview of the file in dired (or a peep). at the
+moment it slows me down so its defered for the time being
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! peep-dired)
+#+END_SRC
+
+#+begin_src emacs-lisp
+(use-package! peep-dired
+  ;; :after dired
+  :defer t
+  :config
+  (setq peep-dired-cleanup-on-disable t)
+  (map! (:after dired (:map dired-mode-map
+                       :n "j" #'peep-dired-next-file
+                       :n "k" #'peep-dired-prev-file
+                       :localleader
+                       "p" #'peep-dired))))
+#+end_src
+
+*** modeline fun
+/whats life without a little colour?/
+#+begin_src emacs-lisp :tangle packages.el
+(package! nyan-mode)
+(package! parrot)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! nyan-mode
+  :defer t
+  :config
+  (setq nyan-bar-length 20
+        nyan-wavy-trail t))
+
+(use-package! parrot
+  :defer t
+  :config
+  (parrot-set-parrot-type 'rotating))
+;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
+;; (parrot-set-parrot-type (nth (random (length birds)) birds)))
+
+
+(after! doom-modeline
+  (nyan-mode)
+  (nyan-start-animation)
+  (parrot-mode)
+  (parrot-start-animation))
+#+end_src
+
+*** Evil tutor
+I wanted to see the differences with its vim counterparts
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! evil-tutor)
+#+END_SRC
+*** discord rich presence
 I use discord emacs over elcord .. well because I found it first this is pretty
 much all that is needed for it to work and you can use the default client id to
 get it working right away or if you want to roll your own .you can add assets by
@@ -271,27 +361,49 @@ I use non daemon sessions for testing I would much rather it would not be used
     ;; (discord-emacs-run "747913611426529440") ;;mine
     (discord-emacs-run "384815451978334208"))) ;;default
 #+END_SRC
-** TODO dired previews (peep-dired)
-this is meant to give me a preview of the file in dired (or a peep). at the
-moment it slows me down so its defered for the time being
+*** org super agenda
 #+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! peep-dired)
+(package! origami)
+;; (package! org-super-agenda)
 #+END_SRC
 
+*** elfeed-goodies
+I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! elfeed-goodies)
+(package! elfeed-web)
+#+END_SRC
+*** dired drag and drop
+I want drag and drop so I just wrapped dragon in elisp the drag commands work
+wellish
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
+(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+#+end_src
 #+begin_src emacs-lisp
-(use-package! peep-dired
-  ;; :after dired
-  :defer t
+(use-package! dired-dragon
+  :after dired
   :config
-  (setq peep-dired-cleanup-on-disable t)
-  (map! (:after dired (:map dired-mode-map
-                       :n "j" #'peep-dired-next-file
-                       :n "k" #'peep-dired-prev-file
-                       :localleader
-                       "p" #'peep-dired))))
+  (map! :map dired-mode-map
+        (:prefix "C-s"
+         :n "d" #'dired-dragon
+         :n "s" #'dired-dragon-stay
+         :n "i" #'dired-dragon-individual)))
 #+end_src
 
-** tldr integration
+*** themes
+this was for a terminal  experiment that did not work
+#+begin_src emacs-lisp :tangle packages.el
+(package! horizon-theme)
+(unpin! doom-themes)
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! rose-pine-emacs :recipe (:host github :repo "Caelie/rose-pine-emacs"))
+#+end_src
+** Outside Influence
+*** tldr integration
 Ever wanted to.. not read a man page? me too. tldr is a good middle ground between
 a lot of useless information and .. no information. Now in emacs!
 #+BEGIN_SRC emacs-lisp :tangle packages.el
@@ -304,28 +416,25 @@ a lot of useless information and .. no information. Now in emacs!
   (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
   (setq tldr-enabled-categories '("common" "linux")))
 #+end_src
-** selectric-mode
-I want to annoy people with a loud keyboard without having to carry around a
-loud keyboard
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! selectric-mode)
-#+END_SRC
-** Caddy
+*** atomic chrome
 #+begin_src emacs-lisp :tangle packages.el
-(package! caddyfile-mode)
+(package! atomic-chrome)
 #+end_src
-
+When writing a lot of markdown on github this helps (now all I need to do is get the
+button on a keybind in my browser)
 #+begin_src emacs-lisp
-(use-package! caddyfile-mode
-  :mode (("Caddyfile\\'" . caddyfile-mode)
-         ("caddy\\.conf\\'" . caddyfile-mode)))
+(use-package! atomic-chrome
+  :after-call focus-out-hook
+  :config
+  (setq atomic-chrome-buffer-open-style 'frame
+        atomic-chrome-default-major-mode 'markdown-mode
+        atomic-chrome-url-major-mode-alist
+        '(("github.\\.com" . gfm-mode)
+          ("reddit\\.com" . fundamental-mode)))
+
+  (atomic-chrome-start-server))
 #+end_src
-** Evil tutor
-I wanted to see the differences with its vim counterparts
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! evil-tutor)
-#+END_SRC
-** emacs application framework
+*** emacs application framework
 eaf is an application framework for writing pyqt applications in emacs. Its
 really cool!
 https://github.com/MatthewZMD/.emacs.d#orgad36696 this is a config I need to revisit
@@ -359,70 +468,7 @@ sudo apt-get install python3-pyqt5.qtwebengine python3-pyqt5.qtmultimedia
   (setq eaf-evil-leader-keymap doom-leader-map)
   (setq eaf-evil-leader-key "SPC"))
 #+END_SRC
-** atomic chrome
-#+begin_src emacs-lisp :tangle packages.el
-(package! atomic-chrome)
-#+end_src
-When writing a lot of markdown on github this helps (now all I need to do is get the
-button on a keybind in my browser)
-#+begin_src emacs-lisp
-(use-package! atomic-chrome
-  :after-call focus-out-hook
-  :config
-  (setq atomic-chrome-buffer-open-style 'frame
-        atomic-chrome-default-major-mode 'markdown-mode
-        atomic-chrome-url-major-mode-alist
-        '(("github.\\.com" . gfm-mode)
-          ("reddit\\.com" . fundamental-mode)))
-
-  (atomic-chrome-start-server))
-#+end_src
-** modeline fun
-/whats life without a little colour?/
-#+begin_src emacs-lisp :tangle packages.el
-(package! nyan-mode)
-(package! parrot)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! nyan-mode
-  :defer t
-  :config
-  (setq nyan-bar-length 20
-        nyan-wavy-trail t))
-
-(use-package! parrot
-  :defer t
-  :config
-  (parrot-set-parrot-type 'rotating))
-;; (defvar birds '('default 'confused 'emacs 'nyan 'rotating 'science 'thumbsup)) ; FIXME
-;; (parrot-set-parrot-type (nth (random (length birds)) birds)))
-
-
-(after! doom-modeline
-  (nyan-mode)
-  (nyan-start-animation)
-  (parrot-mode)
-  (parrot-start-animation))
-#+end_src
-
-** vim
-because sacrilege is fun
-(this is mostly a mental exercise but it does work...) I can (alleged) also get lsp
-support as well so this may be a fun project to take on
-#+begin_src emacs-lisp :tangle packages.el
-(package! vimrc-mode)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! vimrc-mode
-  :mode "\\.vim\\'"
-  :config
-  (sp-with-modes 'vimrc-mode
-    (sp-local-pair "\"" :action nil)))
-#+end_src
-
-** pretty code shots
+*** pretty code shots
 I missed the ability to make pretty code shots inside vscode now its come back to
 me through this package. its pretty cool and works well (it only does one thing)
 #+begin_src emacs-lisp :tangle packages.el
@@ -445,7 +491,14 @@ from the repos tho this problem goes away
   (map! :n "g C-c" #'yeet/carbon-use-eaf))
 #+end_src
 
-** TODO keycast
+*** matrix
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! matrix-client.el :recipe (:host github :repo "alphapapa/matrix-client.el"))
+#+end_src
+
+#+end_src
+** fun!
+*** TODO keycast
 I have stolen this from @tecosaur again..
 #+BEGIN_SRC emacs-lisp :tangle packages.el
 (package! keycast)
@@ -474,7 +527,13 @@ also bound it
                   :weight bold))
   (map! :leader "tk" #'keycast-mode))
 #+END_SRC
-** Games
+*** selectric-mode
+I want to annoy people with a loud keyboard without having to carry around a
+loud keyboard
+#+BEGIN_SRC emacs-lisp :tangle packages.el
+(package! selectric-mode)
+#+END_SRC
+*** Games
 I want to make a module full of fun games and additins to eastr eggs. its there
 to document what exists and just add a little more fun to the operating system
 we call home
@@ -487,40 +546,59 @@ Some games I will probably add
 ;;            :repo "sprang/emacs-2048"))
 
 #+end_src
-** dired drag and drop
-I want drag and drop so I just wrapped dragon in elisp the drag commands work
-wellish
+*** snow
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! dired-dragon :recipe (:local-repo "~/code/elisp/dired-dragon"))
-(package! dired-dragon :recipe (:host github :repo "jeetelongname/dired-dragon"))
+(package! snow)
 #+end_src
+
 #+begin_src emacs-lisp
-(use-package! dired-dragon
-  :after dired
+(use-package! snow
   :config
-  (map! :map dired-mode-map
-        (:prefix "C-s"
-         :n "d" #'dired-dragon
-         :n "s" #'dired-dragon-stay
-         :n "i" #'dired-dragon-individual)))
+  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
 #+end_src
 
-** org super agenda
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! origami)
-;; (package! org-super-agenda)
-#+END_SRC
-
-** elfeed-goodies
-I needed elfeed to look a little nicer. so I got elfeed goodies which did the job
-#+BEGIN_SRC emacs-lisp :tangle packages.el
-(package! elfeed-goodies)
-(package! elfeed-web)
-#+END_SRC
 ** TODO Sidebars
-By vertue of these things I seem to have 3 different sidebars (4 if you include
+By virtue of these things I seem to have 3 different sidebars (4 if you include
 treemacs) that I have taken a liking to so they get there own sub genre
 
+#+begin_src emacs-lisp
+(defun yeet/sidebar ()
+  "Wrappoer for multiple sidebars
+there will be more..."
+  (interactive)
+  (require 'dired-sidebar)
+  (require 'ibuffer-sidebar)
+  (ibuffer-sidebar-toggle-sidebar)
+  (dired-sidebar-toggle-sidebar)) ;; order matters
+#+end_src
+*** Dired sidebar
+this is a replacement for treemacs. Now don't get me wrong. I like treemacs. Its
+great but its /not dired/. This preserves a lot of the dired configuration I could
+do and more importantly preserves keys which is nice
+#+begin_src emacs-lisp :tangle packages.el
+(package! dired-sidebar)
+#+end_src
+#+begin_src emacs-lisp
+(after! dired (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
+
+(use-package dired-sidebar
+  :defer t
+  :config
+  (setq dired-sidebar-use-custom-modeline t
+        dired-sidebar-should-follow-file t))
+(map! :leader "o p" nil :leader "o p" #'yeet/sidebar)
+#+end_src
+*** Ibuffer sidebar
+this is the same thing as above made by the same [[https://github.com/jojojames][author]] and it works just like
+dired sidebar.. for Ibuffer
+#+begin_src emacs-lisp :tangle packages.el
+(package! ibuffer-sidebar)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ibuffer-sidebar
+  :defer t)
+#+end_src
 *** Org Sidebar
 this does a bunch of org stuff like break stuff down into headings. there is a
 bit of work to be done
@@ -533,51 +611,6 @@ bit of work to be done
   :after org)
 #+end_src
 
-*** Dired sidebar
-this is a replacement for treemacs. Now don't get me wrong. I like treemacs. Its
-great but its /not dired/ this preserves a lot of the dired configuration I
-could do and more importantly preserves keys which is nice
-#+begin_src emacs-lisp :tangle packages.el
-(package! dired-sidebar)
-#+end_src
-#+begin_src emacs-lisp
-(use-package dired-sidebar
-  :defer t)
-#+end_src
-
-*** Ibuffer sidebar
-this is the same thing as above made by the same [[https://github.com/jojojames][author]] and it works just like
-dired sidebar.. for Ibuffer
-#+begin_src emacs-lisp :tangle packages.el
-(package! ibuffer-sidebar)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! ibuffer-sidebar
-  :defer t)
-#+end_src
-** snow
-#+begin_src emacs-lisp :tangle packages.el
-(package! snow)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! snow
-  :config
-  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
-#+end_src
-
-** themes
-this was for a terminal  experiment that did not work
-#+begin_src emacs-lisp :tangle packages.el
-(package! horizon-theme)
-(unpin! doom-themes)
-#+end_src
-
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! rose-pine-emacs :recipe (:host github :repo "Caelie/rose-pine-emacs"))
-#+end_src
 * Modules
 These are the configurations for the doom specific modules. some are big like
 mu4e, some are small like dired. some are well sized. They are all loved tho!
@@ -618,10 +651,9 @@ Iosevka is my new best friend
 (setq! doom-font
        (font-spec :family "Iosevka" :size 16)
        doom-big-font
-       (font-spec :family "Iosevka" :size 25))
-
-;; doom-variable-pitch-font
-;; (font-spec :family "Inconsolata NF" :size 15))
+       (font-spec :family "Iosevka" :size 25)
+       doom-variable-pitch-font
+       (font-spec :family "LibreBaskerville" :size 17))
 #+end_src
 
 the comments for horizon are borderline unreadable so now we have brighter
@@ -744,7 +776,7 @@ its still useful for presentation's
 #+BEGIN_SRC emacs-lisp
 (after! treemacs
   (setq +treemacs-git-mode 'extended
-        treemacs-width 25))
+        treemacs-width 30))
 #+END_SRC
 ** tools
 *** TODO debugger
@@ -767,6 +799,7 @@ this does a thing
       :leader "od" #'dap-debug
       :leader "dt" #'dap-breakpoint-toggle)
 #+end_src
+*** Magit
 ** emacs
 *** dired
 If I open 2 instances of dired in two different locations then move one. dired
@@ -774,14 +807,23 @@ will point the move to the other location
 #+begin_src emacs-lisp
 (setq dired-dwim-target t)
 #+end_src
+** term
+*** eshell
+eshell is a repl like shell. it works like a shell but you can use elisp in line
+and it does not handle tui apps (like htop) usually defering to ~ansi-term~
+#+begin_src emacs-lisp
+(set-eshell-alias!
+ "cls" "clear")
+#+end_src
 
 ** lang
 *** TODO Org
 Org mode. our favorite plain text markup format! these are my configurations for
 it
 #+BEGIN_SRC emacs-lisp
+(setq org-directory "~/org-notes/")
 (after! org
-  (setq org-directory "~/org-notes/"
+  (setq
         org-agenda-files (list org-directory)
         org-hide-emphasis-markers t)
 
@@ -818,7 +860,11 @@ directly
         ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 #+END_SRC
-
+**** Roam
+#+begin_src emacs-lisp
+(setq org-roam-directory (concat org-directory "roam/")
+      org-roam-db-location (concat org-roam-directory ".org-roam.db"))
+#+end_src
 *** Go
 Go and lsp have not been behaving like they should. the file watchers have been
 misbehaving and now they have been disabled for go mode. That fixes the issue
@@ -857,7 +903,9 @@ I just find the tidy formatter indent functionality annoying and redundant. so
 I changed it
 #+begin_src emacs-lisp
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
-(setq +format-on-save-enabled-modes '(not web-mode))
+(setq +format-on-save-enabled-modes
+      '(not web-mode
+            js2-mode))
 #+end_src
 
 #+begin_src conf :tangle tidy.conf

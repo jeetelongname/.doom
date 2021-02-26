@@ -107,17 +107,21 @@
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
+(use-package! caddyfile-mode
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
+
+(use-package! vimrc-mode
+  :mode "\\.vim\\'"
+  :config
+  (sp-with-modes 'vimrc-mode
+    (sp-local-pair "\"" :action nil)))
+
 ;; (setq easy-hugo-basedir "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/")
 (use-package! emacs-easy-hugo
   :after markdown
   :config
   (setq easy-hugo-root "~/code/git-repos/mine/jeetelongname.github.io/blog-hugo/"))
-
-(when (daemonp)
-  (use-package! discord-emacs ;; for face value discord intergration
-    :config
-    ;; (discord-emacs-run "747913611426529440") ;;mine
-    (discord-emacs-run "384815451978334208"))) ;;default
 
 (use-package! peep-dired
   ;; :after dired
@@ -129,40 +133,6 @@
                        :n "k" #'peep-dired-prev-file
                        :localleader
                        "p" #'peep-dired))))
-
-(use-package! tldr
-  :config
-  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
-  (setq tldr-enabled-categories '("common" "linux")))
-
-(use-package! caddyfile-mode
-  :mode (("Caddyfile\\'" . caddyfile-mode)
-         ("caddy\\.conf\\'" . caddyfile-mode)))
-
-(use-package! eaf
-  :defer t
-  :config
-  ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
-  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
-  (setq eaf-browser-default-search-engine "duckduckgo")
-  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
-
-(use-package! eaf-evil ;; evil bindings in my browser
-  :after eaf
-  :config
-  (setq eaf-evil-leader-keymap doom-leader-map)
-  (setq eaf-evil-leader-key "SPC"))
-
-(use-package! atomic-chrome
-  :after-call focus-out-hook
-  :config
-  (setq atomic-chrome-buffer-open-style 'frame
-        atomic-chrome-default-major-mode 'markdown-mode
-        atomic-chrome-url-major-mode-alist
-        '(("github.\\.com" . gfm-mode)
-          ("reddit\\.com" . fundamental-mode)))
-
-  (atomic-chrome-start-server))
 
 (use-package! nyan-mode
   :defer t
@@ -184,11 +154,50 @@
   (parrot-mode)
   (parrot-start-animation))
 
-(use-package! vimrc-mode
-  :mode "\\.vim\\'"
+(when (daemonp)
+  (use-package! discord-emacs ;; for face value discord intergration
+    :config
+    ;; (discord-emacs-run "747913611426529440") ;;mine
+    (discord-emacs-run "384815451978334208"))) ;;default
+
+(use-package! dired-dragon
+  :after dired
   :config
-  (sp-with-modes 'vimrc-mode
-    (sp-local-pair "\"" :action nil)))
+  (map! :map dired-mode-map
+        (:prefix "C-s"
+         :n "d" #'dired-dragon
+         :n "s" #'dired-dragon-stay
+         :n "i" #'dired-dragon-individual)))
+
+(use-package! tldr
+  :config
+  (setq tldr-directory-path (expand-file-name "tldr/" doom-etc-dir))
+  (setq tldr-enabled-categories '("common" "linux")))
+
+(use-package! atomic-chrome
+  :after-call focus-out-hook
+  :config
+  (setq atomic-chrome-buffer-open-style 'frame
+        atomic-chrome-default-major-mode 'markdown-mode
+        atomic-chrome-url-major-mode-alist
+        '(("github.\\.com" . gfm-mode)
+          ("reddit\\.com" . fundamental-mode)))
+
+  (atomic-chrome-start-server))
+
+(use-package! eaf
+  :defer t
+  :config
+  ;; (setq eaf-enable-debug t) ; should only be used when eaf is wigging out
+  (eaf-setq eaf-browser-dark-mode "false") ; dark mode is overrated
+  (setq eaf-browser-default-search-engine "duckduckgo")
+  (eaf-setq eaf-browse-blank-page-url "https://duckduckgo.com"))
+
+(use-package! eaf-evil ;; evil bindings in my browser
+  :after eaf
+  :config
+  (setq eaf-evil-leader-keymap doom-leader-map)
+  (setq eaf-evil-leader-key "SPC"))
 
 (use-package! carbon-now-sh
   :config
@@ -221,27 +230,33 @@
                   :weight bold))
   (map! :leader "tk" #'keycast-mode))
 
-(use-package! dired-dragon
-  :after dired
+(use-package! snow
   :config
-  (map! :map dired-mode-map
-        (:prefix "C-s"
-         :n "d" #'dired-dragon
-         :n "s" #'dired-dragon-stay
-         :n "i" #'dired-dragon-individual)))
+  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
 
-(use-package! org-sidebar
-  :after org)
+(defun yeet/sidebar ()
+  "Wrappoer for multiple sidebars
+there will be more..."
+  (interactive)
+  (require 'dired-sidebar)
+  (require 'ibuffer-sidebar)
+  (ibuffer-sidebar-toggle-sidebar)
+  (dired-sidebar-toggle-sidebar)) ;; order matters
+
+(after! dired (add-hook! 'dired-sidebar-mode-hook (doom-modeline-mode -1)))
 
 (use-package dired-sidebar
-  :defer t)
+  :defer t
+  :config
+  (setq dired-sidebar-use-custom-modeline t
+        dired-sidebar-should-follow-file t))
+(map! :leader "o p" nil :leader "o p" #'yeet/sidebar)
 
 (use-package! ibuffer-sidebar
   :defer t)
 
-(use-package! snow
-  :config
-  (set-popup-rule! "^\\*snow\\*$" :ignore t :modeline nil)) ;; FIXME does not work
+(use-package! org-sidebar
+  :after org)
 
 (after! company
   (setq company-idle-delay 0.7 ; I like my autocomplete like my tea fast not oftern but still there
@@ -260,10 +275,9 @@
 (setq! doom-font
        (font-spec :family "Iosevka" :size 16)
        doom-big-font
-       (font-spec :family "Iosevka" :size 25))
-
-;; doom-variable-pitch-font
-;; (font-spec :family "Inconsolata NF" :size 15))
+       (font-spec :family "Iosevka" :size 25)
+       doom-variable-pitch-font
+       (font-spec :family "LibreBaskerville" :size 17))
 
 (after! doom-themes
   (setq! doom-themes-enable-bold t
@@ -336,7 +350,7 @@
 
 (after! treemacs
   (setq +treemacs-git-mode 'extended
-        treemacs-width 25))
+        treemacs-width 30))
 
 (after! dap-mode
   (setq dap-auto-configure-features '(sessions locals controls tooltip)
@@ -351,8 +365,12 @@
 
 (setq dired-dwim-target t)
 
+(set-eshell-alias!
+ "cls" "clear")
+
+(setq org-directory "~/org-notes/")
 (after! org
-  (setq org-directory "~/org-notes/"
+  (setq
         org-agenda-files (list org-directory)
         org-hide-emphasis-markers t)
 
@@ -377,6 +395,9 @@
         ("b" "Blog" entry (file+headline "blog-ideas.org" "Ideas") "**** TODO  %?\n%i" :prepend t :kill-buffer t)
         ("U" "UTCR" entry (file+headline "UTCR-TODO.org" "Tasks") "**** TODO %?\n%i" :prepend t :kill-buffer t))))
 
+(setq org-roam-directory (concat org-directory "roam/")
+      org-roam-db-location (concat org-roam-directory ".org-roam.db"))
+
 (after! go-mode ;; I have stopped using ligatures so this is not useful to me but it can be to you!
   (set-ligatures! 'go-mode
                   :def "func"
@@ -398,7 +419,9 @@
       :i "TAB" #'cdlatex-tab)
 
 (setenv "HTML_TIDY" (expand-file-name "tidy.conf" doom-private-dir))
-(setq +format-on-save-enabled-modes '(not web-mode))
+(setq +format-on-save-enabled-modes
+      '(not web-mode
+            js2-mode))
 
 (set-email-account! "gmail"
                     '((mu4e-sent-folder       . "/gmail/\[Gmail\]/Sent Mail")
