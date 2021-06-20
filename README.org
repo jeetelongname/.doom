@@ -1,6 +1,8 @@
 #+TITLE:   My config of doom emacs
 #+DATE:    October 10, 2020
-#+STARTUP noindent
+#+STARTUP noinden
+
+* *This config is deprecated for an updated config check out my [[https://github.com/jeetelongname/dotfiles][dotfiles repo]]*
 
 * this is my config of [[https://github.com/hlissner/doom-emacs][doom emacs]]
 I have written quite a bit of stuff in here so there may be stuff to take. have
